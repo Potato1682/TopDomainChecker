@@ -20,9 +20,9 @@ jobs:
     - name: Install dependencies
       run: dotnet restore src
     - name: Build and Run
-      run: dotnet run src --configuration Release --no-restore
+      run: dotnet run --project src/TopDomainChecker.csproj --configuration Release --no-restore -- google -j 32
     - name: Test
-      run: dotnet test src --no-restore --verbosity normal
+      run: dotnet test src/TopDomainChecker.csproj --no-restore --verbosity normal
 
   build-macos:
 
@@ -38,6 +38,6 @@ jobs:
     - name: Install dependencies
       run: dotnet restore src
     - name: Build and Run
-      run: dotnet run src --configuration Release --no-restore
+      run: dotnet run --project src/TopDomainChecker.csproj --configuration Release --no-restore -- google -j 32
     - name: Test
-      run: dotnet test src --no-restore --verbosity normal
+      run: dotnet test src/TopDomainChecker.csproj --no-restore --verbosity normal
