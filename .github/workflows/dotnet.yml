@@ -18,11 +18,11 @@ jobs:
       with:
         dotnet-version: 3.1.301
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore src
     - name: Build and Run
-      run: dotnet run --configuration Release --no-restore
+      run: dotnet run src --configuration Release --no-restore
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test src --no-restore --verbosity normal
 
   build-macos:
 
@@ -36,8 +36,8 @@ jobs:
       with:
         dotnet-version: 3.1.301
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore src
     - name: Build and Run
-      run: dotnet run --configuration Release --no-restore
+      run: dotnet run src --configuration Release --no-restore
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test src --no-restore --verbosity normal
