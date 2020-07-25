@@ -14,7 +14,7 @@ The top level domain is described in [domains.txt](domains.txt) from [Wikipedia]
 
 **Note: I got the information from Wikipedia in Japan, but it's possible that the top-level domain isn't completely covered because Wikipedia displays a "contains outdated information" warning.**
 
-## Parallel mechanism
+## Parallel proceccing mechanism
 
 For parallel processing, `Parallel.ForEach()` function of `System.Threading.Tasks` library of C# is used.  
 The number of jobs is specified in the `ParallelOptions` class and the process is run for each item in the collection.
