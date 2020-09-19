@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "TopDomainChecker": {
-      "commandName": "Project",
-      "commandLineArgs": "google -j 4"
-    }
-  }
-}
