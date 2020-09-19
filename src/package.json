@@ -33,6 +33,7 @@
     "devDependencies": {
         "babel-cli": "^6.26.0",
         "eslint": "^7.9.0",
-        "eslint-plugin-node": "^11.1.0"
+        "eslint-plugin-node": "^11.1.0",
+        "pkg": "^4.4.9"
     }
 }
