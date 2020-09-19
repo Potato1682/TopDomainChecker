@@ -16,5 +16,23 @@
     "bugs": {
         "url": "https://github.com/P2P-Develop/TopDomainChecker/issues"
     },
-    "homepage": "https://github.com/P2P-Develop/TopDomainChecker#readme"
+    "homepage": "https://github.com/P2P-Develop/TopDomainChecker#readme",
+    "dependencies": {
+        "boxen": "^4.2.0",
+        "chalk": "^4.1.0",
+        "cli-cursor": "^3.1.0",
+        "command-line-args": "^5.1.1",
+        "command-line-usage": "^6.1.0",
+        "figures": "^3.2.0",
+        "https": "^1.0.0",
+        "inquirer": "^7.3.3",
+        "ping": "^0.2.3",
+        "pretty-error": "^2.1.1",
+        "terminal-link": "^2.1.1"
+    },
+    "devDependencies": {
+        "babel-cli": "^6.26.0",
+        "eslint": "^7.9.0",
+        "eslint-plugin-node": "^11.1.0"
+    }
 }
