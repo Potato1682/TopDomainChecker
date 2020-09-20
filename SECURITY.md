@@ -11,4 +11,4 @@ The GET request is encrypted via https communication.
 
 ## Reporting a Vulnerability
 
-If you find a security vulnerability, issue with \[security\] label and report the [GitHub Issues](https://github.com/Potato1682/TopDomainChecker/issues).  
+If you find a security vulnerability, issue with \[security\] label and report the [GitHub Issues](https://github.com/P2P-Develop/TopDomainChecker/issues).  
