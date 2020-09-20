@@ -16,61 +16,58 @@ prettyerror.start()
 cliCursor.hide()
 
 // Command usages and arguments
-const usage = commandLineUsage([
-    {
-        header: "TopDomainChecker",
-        content: "Brute-force the top-level domain with {italic parallel}."
+const usage = commandLineUsage([{
+    header: "TopDomainChecker",
+    content: "Brute-force the top-level domain with {italic parallel}."
+},
+{
+    header: "Main Values",
+    content: [{
+        name: "{bold [stdin]}",
+        summary: "Get the domain to search from the standard input. \n If the standard input does not find anything, you will be prompted with \n an argument or interactively."
     },
     {
-        header: "Main Values",
-        content: [
-            {
-                name: "{bold [stdin]}",
-                summary: "Get the domain to search from the standard input. \n If the standard input does not find anything, you will be prompted with \n an argument or interactively."
-            },
-            {
-                name: "{bold [domain]}",
-                summary: "{underline TopDomainChecker prioritizes arguments over standard inputs}. \n If it missing, show the interactive prompt."
-            }
-        ]
-    },
-    {
-        header: "Misc Options",
-        optionList: [
-            {
-                name: "verbose",
-                alias: "v",
-                description: "Enable verbose logging.",
-                type: Boolean,
-                defaultValue: false
-            },
-            {
-                name: "help",
-                alias: "h",
-                description: "Print this usage guide.",
-                type: Boolean
-            },
-            {
-                name: "quiet",
-                alias: "q",
-                description: "No ping notification is output, only the result is output.",
-                type: Boolean,
-                defaultValue: false
-            },
-            {
-                name: "no-box",
-                alias: "Q",
-                description: "Checker don't use boxes to display results. Only successful domains and line breaks are displayed. \n Use this with {bold --quiet}, it can be easily integrated with other programs.",
-                type: Boolean,
-                defaultValue: false
-            }
-        ]
-    },
-    {
-        content: `Project home: ${terminalLink(
-            "GitHub",
-            "https://github.com/P2P-Develop/TopDomainChecker")}`
+        name: "{bold [domain]}",
+        summary: "{underline TopDomainChecker prioritizes arguments over standard inputs}. \n If it missing, show the interactive prompt."
     }
+    ]
+},
+{
+    header: "Misc Options",
+    optionList: [{
+        name: "verbose",
+        alias: "v",
+        description: "Enable verbose logging.",
+        type: Boolean,
+        defaultValue: false
+    },
+    {
+        name: "help",
+        alias: "h",
+        description: "Print this usage guide.",
+        type: Boolean
+    },
+    {
+        name: "quiet",
+        alias: "q",
+        description: "No ping notification is output, only the result is output.",
+        type: Boolean,
+        defaultValue: false
+    },
+    {
+        name: "no-box",
+        alias: "Q",
+        description: "Checker don't use boxes to display results. Only successful domains and line breaks are displayed. \n Use this with {bold --quiet}, it can be easily integrated with other programs.",
+        type: Boolean,
+        defaultValue: false
+    }
+    ]
+},
+{
+    content: `Project home: ${terminalLink(
+        "GitHub",
+        "https://github.com/P2P-Develop/TopDomainChecker")}`
+}
 ])
 
 const args = commandLineArgs([
@@ -105,13 +102,11 @@ if (stdin !== undefined)
 // If also not, show cursor and interactive prompt
 if (!("domain" in args)) {
     cliCursor.show()
-    const tmp = await inquirer
-        .prompt({
-            type: "input",
-            name: "domain",
-            message: "Which domain do you want to check (can split the spaces):"
-        })
-        .then((ans) => ans)
+    const tmp = await inquirer.prompt({
+        type: "input",
+        name: "domain",
+        message: "Which domain do you want to check (can split the spaces):"
+    }).then(ans => ans)
     cliCursor.hide()
     args.domain = [...tmp.domain.split(" ")]
 }
@@ -123,20 +118,25 @@ const gets = (domains) => {
             .then((res) => {
                 if (res.alive) {
                     aliveDomain.push(domain)
-                    console.log(
-                        `${chalk.greenBright.inverse(
-                            `  ${figures.tick}  `
-                        )}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright(
-                            "up"
-                        )}`
-                    )
+                    if (!args.quiet)
+                        console.log(
+                            `${chalk.greenBright.inverse(
+                                `  ${figures.tick}  `
+                            )}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright(
+                                "up"
+                            )}`
+                        )
                     return Promise.resolve()
                 }
 
-                console.log(
-                    `${chalk.redBright.inverse(
-                        `  ${figures.cross}  `
-                    )}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}`)
+                if (!args.quiet)
+                    console.log(
+                        `${chalk.redBright.inverse(
+                            `  ${figures.cross}  `
+                        )}  ${chalk.bold.cyan(domain)} is ${chalk.redBright(
+                            "down"
+                        )}`
+                    )
 
                 return Promise.resolve()
             })
@@ -150,10 +150,18 @@ const main = (tlds) => {
         tlds.map((tld) => `${d}.${tld}`).forEach((uri) => order.push(uri))
     })
 
+    if (!args.quiet)
+        console.log(`\n${chalk.bold.magenta(figures.pointer)} Processing ${chalk.bold.blueBright(order.length)} domains`)
+
     try {
         gets(order)
     } finally {
-        setTimeout(() => { console.log(boxen(`${chalk.bold.underline("--- Result---")}\n\n${chalk.bold.blueBright(aliveDomain.join("\n"))}`, { padding: 1, borderColor: "yellow", margin: 2, align: "center" })) }, 10000)
+        setTimeout(() => {
+            if (!args["no-box"])
+                console.log(boxen(`${chalk.bold.underline("--- Result---")}\n\n${chalk.bold.blueBright(aliveDomain.join("\n"))}`, { padding: 1, borderColor: "yellow", margin: 2, align: "center" }))
+            else
+                console.log(aliveDomain.join("\n"))
+        }, 10000)
     }
 }
 
