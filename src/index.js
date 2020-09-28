@@ -235,6 +235,8 @@ const main = (tlds) => {
         })
 
         console.log("\n\n")
+    } else {
+        args.domain.forEach((d) => tlds.map((tld) => `${d}.${tld}`).forEach((uri) => order.push(uri)))
     }
 
     try {
