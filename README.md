@@ -1,14 +1,23 @@
-TopDomainChecker
-================
+<h1 align="center">TopDomainChecker</h1>
 
-Brute-force top-level domains with parallel.
+<p align="center">Brute-force top-level domains with parallel.</p>
 
-## Overview
+---
 
-Makes the most of the thread pool and brute force the top-level domain with multiple jobs.  
-Verify the existence of the host using ICMP echo.
+<p align="center">This plugin document supported multi language.</p>
 
-## Top-Level domain names
-
-Top-level domains are getting the latest list from [IANA](https://data.iana.org/TLD/tlds-alpha-by-domain.txt).  
-Also, you can add other top-level domain with **-t**.
+<p align="center">
+    <a href="https://github.com/P2P-Develop/TopDomainChecker/blob/master/docs/README-en.md"
+    ><img
+            height="40"
+            src="https://raw.githubusercontent.com/google/region-flags/gh-pages/svg/US.svg"
+            alt="English"
+    ></a>
+    &nbsp;
+    <a href="https://github.com/P2P-Develop/TopDomainChecker/blob/master/docs/README-ja.md"
+    ><img
+            height="40"
+            src="https://raw.githubusercontent.com/google/region-flags/gh-pages/svg/JP.svg"
+            alt="日本語"
+    ></a>
+</p>

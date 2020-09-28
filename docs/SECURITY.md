@@ -1,5 +1,7 @@
 # Security Policy
 
+日本語は[こちら](SECURITY-ja.md)から。
+
 ## Supported Versions
 
 The GET request is encrypted via https communication.
