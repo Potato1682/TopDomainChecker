@@ -55,7 +55,8 @@ const usage = commandLineUsage([{
                 name: "help",
                 alias: "h",
                 description: "Print this usage guide.",
-                type: Boolean
+                type: Boolean,
+                defaultValue: false
             },
             {
                 name: "quiet",
@@ -90,7 +91,7 @@ const args = commandLineArgs([
     {name: "version", alias: "V", type: Boolean, defaultValue: false},
     {name: "verbose", alias: "v", type: Boolean, defaultValue: false},
     {name: "domain", type: String, multiple: true, defaultOption: true},
-    {name: "help", alias: "h", type: Boolean},
+    {name: "help", alias: "h", type: Boolean, defaultOption: false},
     {name: "quiet", alias: "q", type: Boolean, defaultValue: false},
     {name: "no-box", alias: "Q", type: Boolean, defaultValue: false},
     {name: "add-tld", alias: "t"}
