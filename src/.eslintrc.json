@@ -9,7 +9,7 @@
     "parser": "babel-eslint",
     "parserOptions": {
         "sourceType": "module",
-        "ecmaVersion": 2021
+        "ecmaVersion": 2020
     },
     "rules": {
         "indent": ["error", 4],

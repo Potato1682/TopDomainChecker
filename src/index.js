@@ -218,8 +218,7 @@ const main = (tlds) => {
                 readline.moveCursor(process.stdout, 0, -1)
             })
             if (args.domain.length > 1 && args.domain.length !== domainCount) {
-                domainCount++
-                process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} Adding ${chalk.blueBright(tldCount)} top-level domains to ${chalk.blueBright(domainCount)} domain names`)
+                process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} Adding ${chalk.blueBright(tldCount)} top-level domains to ${chalk.blueBright(++domainCount)} domain names`)
                 readline.moveCursor(process.stdout, 0, -4)
             }
 
@@ -227,18 +226,15 @@ const main = (tlds) => {
         })
     } else if (!args.quiet) {
         let count = 0
-        args.domain.forEach((d) => {
+        args.domain.forEach((d) =>
             tlds.map((tld) => `${d}.${tld}`).forEach((uri) => {
                 order.push(uri)
                 process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} Adding ${chalk.bold.blueBright(++count)} domains`)
                 readline.moveCursor(process.stdout, 0, -1)
-            })
-        })
+            }))
 
         console.log("\n\n")
-    } else {
-        args.domain.forEach((d) => tlds.map((tld) => `${d}.${tld}`).forEach((uri) => order.push(uri)))
-    }
+    } else args.domain.forEach((d) => tlds.map((tld) => `${d}.${tld}`).forEach((uri) => order.push(uri)))
 
     try {
         gets(order)
@@ -253,8 +249,7 @@ const main = (tlds) => {
                 margin: 2,
                 align: "center"
             }))
-        else
-            console.log(aliveDomain.join("\n"))
+        else console.log(aliveDomain.join("\n"))
     }, 10000)
 }
 
