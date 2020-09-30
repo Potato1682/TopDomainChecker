@@ -1,0 +1,11 @@
+{
+    "plugins": [
+        "lint",
+        "lint-heading-whitespace",
+        "lint-match-punctuation",
+        "lint-no-dead-urls",
+        "lint-no-empty-sections",
+        "lint-no-url-trailing-slash",
+        "remark-preset-lint-recommended"
+    ]
+}
