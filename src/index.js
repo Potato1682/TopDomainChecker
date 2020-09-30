@@ -226,7 +226,7 @@ const main = (tlds) => {
         args.domain.forEach(d =>
             tlds.map(tld => `${d}.${tld}`).forEach((uri, i) => {
                 order.push(uri)
-                process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} Adding ${chalk.bold.blueBright(i)} domains`)
+                process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} Adding ${chalk.bold.blueBright(i + 1)} domains`)
                 readline.moveCursor(process.stdout, 0, -1)
             }))
 
@@ -258,7 +258,7 @@ https.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt", (res) => {
                 [...(`${chunk}`
                     .toLowerCase()
                     .split(/\r\n|\n/)
-                    .filter((tld) => !tld.startsWith("#") || !tld)), ...addTld]
+                    .filter(tld => !tld.startsWith("#") || !tld)), ...addTld]
             )
         } else lockFlag = true
     })
@@ -269,5 +269,5 @@ https.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt", (res) => {
         type: "confirm",
         name: "copy",
         message: "Copy stack-trace to clip board?"
-    }).then(ans => ans).copy) ncp.copy(e)
+    }).then(ans => ans)) ncp.copy(e)
 })
