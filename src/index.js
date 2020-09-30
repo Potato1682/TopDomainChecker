@@ -13,7 +13,7 @@ import prettyerror from "pretty-error"
 import readline from "readline"
 import terminalLink from "terminal-link"
 
-// Call functions
+// Call console beautify functions
 prettyerror.start()
 cliCursor.hide()
 
@@ -76,7 +76,6 @@ const usage = commandLineUsage([{
                 name: "add-tld",
                 alias: "t",
                 description: "Enter additional top-level domains separated by spaces. If you use only the flag, show interactive prompt.",
-                type: String
             }
         ]
     },
@@ -119,15 +118,14 @@ if (args.quiet && args.verbose) {
 const aliveDomain = []
 
 // Check stdin (no input -> undefined)
-const input = () => {
+const stdin = (() => {
     try {
         return fs.readFileSync(process.stdin.fd, "utf-8")
     } catch (e) {
         return undefined
     }
-}
+})()
 
-const stdin = input() // To immutable
 if (stdin !== undefined)
     args.domain = [...args.domain, ...stdin.trim().split(" ")] // If stdin has an input, merge domains
 
@@ -157,10 +155,10 @@ if (args["add-tld"] === null) {
 }
 
 // Ping
-const gets = (domains) => {
-    domains.forEach((domain) => {
+const gets = domains => {
+    domains.forEach(domain => {
         ping.promise.probe(domain, undefined)
-            .then((res) => {
+            .then(res => {
                 if (res.alive) {
                     aliveDomain.push(domain)
                     if (!args.quiet) {
@@ -211,8 +209,8 @@ const main = (tlds) => {
     if (args.verbose) {
         let domainCount = 1
         let tldCount = 0
-        args.domain.forEach((d) => {
-            tlds.map((tld) => `${d}.${tld}`).forEach((uri) => {
+        args.domain.forEach(d => {
+            tlds.map(tld => `${d}.${tld}`).forEach(uri => {
                 order.push(uri)
                 process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} Adding ${chalk.blueBright(++tldCount)} top-level domains to ${chalk.blueBright(domainCount)} domain names`)
                 readline.moveCursor(process.stdout, 0, -1)
@@ -225,22 +223,18 @@ const main = (tlds) => {
             readline.moveCursor(process.stdout, 0, 3)
         })
     } else if (!args.quiet) {
-        let count = 0
-        args.domain.forEach((d) =>
-            tlds.map((tld) => `${d}.${tld}`).forEach((uri) => {
+        args.domain.forEach(d =>
+            tlds.map(tld => `${d}.${tld}`).forEach((uri, i) => {
                 order.push(uri)
-                process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} Adding ${chalk.bold.blueBright(++count)} domains`)
+                process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} Adding ${chalk.bold.blueBright(i)} domains`)
                 readline.moveCursor(process.stdout, 0, -1)
             }))
 
         console.log("\n\n")
-    } else args.domain.forEach((d) => tlds.map((tld) => `${d}.${tld}`).forEach((uri) => order.push(uri)))
+    } else args.domain.forEach(d => (tld => tlds.map(`${d}.${tld}`)).forEach(uri => order.push(uri)))
 
-    try {
-        gets(order)
-    } catch (e) {
-        throw new Error(e)
-    }
+    gets(order)
+
     setTimeout(() => {
         if (!args["no-box"])
             console.log(boxen(`${chalk.bold.underline("--- Result---")}\n\n${chalk.bold.blueBright(aliveDomain.join("\n"))}\n\n${chalk.bold.cyanBright(aliveDomain.length)} ${chalk.greenBright(aliveDomain.length > 1 ? "domains alive" : "domain alive")}`, {
@@ -253,31 +247,27 @@ const main = (tlds) => {
     }, 10000)
 }
 
-let flag = false
+let lockFlag = false
 
-if (args.verbose) {
-    console.log(`\n${chalk.greenBright(figures.pointer)} Fetching top-level domains information from IANA...`)
-}
+if (args.verbose) console.log(`\n${chalk.greenBright(figures.pointer)} Fetching top-level domains information from IANA...`)
 
-https
-    .get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt", (res) => {
-        res.on("data", (chunk) => {
-            if (!flag) {
-                main(
-                    [...(`${chunk}`
-                        .toLowerCase()
-                        .split(/\r\n|\n/)
-                        .filter((tld) => !tld.startsWith("#") || !tld)), ...addTld]
-                )
-            } else flag = true
-        })
+https.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt", (res) => {
+    res.on("data", (chunk) => {
+        if (!lockFlag) {
+            main(
+                [...(`${chunk}`
+                    .toLowerCase()
+                    .split(/\r\n|\n/)
+                    .filter((tld) => !tld.startsWith("#") || !tld)), ...addTld]
+            )
+        } else lockFlag = true
     })
-    .on("error", e => {
-        console.error(e)
-        console.log(`${chalk.redBright(figures.pointer)} ${chalk.bold("Please report this issue to")} ${terminalLink("Github Issues", "https://github.com/P2P-Develop/TopDomainChecker/issues")}`)
-        if (inquirer.prompt({
-            type: "confirm",
-            name: "copy",
-            message: "Copy stack-trace to clip board?"
-        }).then(ans => ans).copy) ncp.copy(e)
-    })
+}).on("error", e => {
+    console.error(e)
+    console.log(`${chalk.redBright(figures.pointer)} ${chalk.bold("Please report this issue to")} ${terminalLink("Github Issues", "https://github.com/P2P-Develop/TopDomainChecker/issues")}`)
+    if (inquirer.prompt({
+        type: "confirm",
+        name: "copy",
+        message: "Copy stack-trace to clip board?"
+    }).then(ans => ans).copy) ncp.copy(e)
+})
