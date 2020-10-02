@@ -129,7 +129,9 @@ if (arguments_.quiet && arguments_.verbose) {
 const aliveDomain = []
 
 // Check stdin (no input -> empty)
-const stdin = (async () => await getStdin())()
+let stdin;
+
+(async () => stdin = await getStdin())()
 
 if (stdin)
     arguments_.domain = [ ...arguments_.domain, ...stdin.trim().split(" ") ]
