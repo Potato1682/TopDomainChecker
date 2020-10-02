@@ -1,5 +1,6 @@
 import https from "https"
 import readline from "readline"
+import Enquirer from "enquirer"
 import getStdin from "get-stdin"
 import boxen from "boxen"
 import chalk from "chalk"
@@ -8,7 +9,6 @@ import ncp from "copy-paste"
 import commandLineArgs from "command-line-args"
 import commandLineUsage from "command-line-usage"
 import figures from "figures"
-import inquirer from "inquirer"
 import ping from "ping"
 import prettyerror from "pretty-error"
 import terminalLink from "terminal-link"
@@ -98,13 +98,13 @@ const usage = commandLineUsage([
 ])
 
 const arguments_ = commandLineArgs([
-    { name: "version", alias: "V", type: Boolean, defaultValue: false },
-    { name: "verbose", alias: "v", type: Boolean, defaultValue: false },
-    { name: "domain", alias: "d", type: String, multiple: true, defaultOption: true },
-    { name: "help", alias: "h", type: Boolean, defaultOption: false },
-    { name: "quiet", alias: "q", type: Boolean, defaultValue: false },
-    { name: "no-box", alias: "Q", type: Boolean, defaultValue: false },
-    { name: "add-tld", alias: "t" }
+    {name: "version", alias: "V", type: Boolean, defaultValue: false},
+    {name: "verbose", alias: "v", type: Boolean, defaultValue: false},
+    {name: "domain", alias: "d", type: String, multiple: true, defaultOption: true},
+    {name: "help", alias: "h", type: Boolean, defaultOption: false},
+    {name: "quiet", alias: "q", type: Boolean, defaultValue: false},
+    {name: "no-box", alias: "Q", type: Boolean, defaultValue: false},
+    {name: "add-tld", alias: "t"}
 ])
 
 if (arguments_.version) {
@@ -129,39 +129,40 @@ if (arguments_.quiet && arguments_.verbose) {
 const aliveDomain = []
 
 // Check stdin (no input -> empty)
-let stdin;
-
-(async () => stdin = await getStdin())()
+const stdin = await getStdin()
 
 if (stdin)
-    arguments_.domain = [ ...arguments_.domain, ...stdin.trim().split(" ") ]
-// If stdin has an input, merge domains
+    arguments_.domain = [ ...arguments_.domain, ...stdin.trim().split(" ") ] // If stdin has an input, merge domains
 
 // If also not, show cursor and interactive prompt
 if (!("domain" in arguments_)) {
     cliCursor.show()
-    const domainAnswer = (async () => await inquirer.prompt({
-        type: "input",
-        name: "domain",
-        message: "Which domain do you want to check (can split the spaces):"
-    }))().then(ans => ans)
+
+    const domainAnswer = await Enquirer.prompt({
+        type: "list",
+        name: "domains",
+        message: "Which domain do you want to check (comma-separated)"
+    }).domains
+
+    arguments_.domain = [...domainAnswer]
 
     cliCursor.hide()
-    arguments_.domain = [...domainAnswer.domain.split(" ")]
 }
 
 const addTld = []
 
 if (arguments_["add-tld"] === null) {
     cliCursor.show()
-    const tldAnswer = (async () => await inquirer.prompt({
-        type: "input",
+
+    const tldAnswer = await Enquirer.prompt({
+        type: "list",
         name: "tlds",
-        message: "Which top-level domain do you want to check (can split the spaces):"
-    }))().then(answer => answer)
+        message: "Which top-level domain do you want to check (comma-separated):"
+    }).tlds
+
+    addTld.push(...tldAnswer)
 
     cliCursor.hide()
-    addTld.push(...tldAnswer.tlds.split(" "))
 }
 
 // Ping
@@ -178,7 +179,6 @@ const gets = (domains) => {
                             readline.moveCursor(process.stdout, 0, -1)
                         else
                             console.log()
-
                     }
 
                     return Promise.resolve()
@@ -188,11 +188,10 @@ const gets = (domains) => {
                     process.stdout.write(`\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}` +
                         " ".repeat(process.stdout.columns - `\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}`.length))
 
-                    if (!arguments_.verbose)
-                        readline.moveCursor(process.stdout, 0, -1)
-                    else
+                    if (arguments_.verbose)
                         console.log()
-
+                    else
+                        readline.moveCursor(process.stdout, 0, -1)
                 }
 
                 return Promise.resolve()
@@ -203,7 +202,8 @@ const gets = (domains) => {
 const main = (tlds) => {
     const order = []
 
-    console.log()
+    if (!arguments_.quiet) console.log()
+
     if (arguments_.verbose) {
         let domainCount = 1
         let tldCount = 0
@@ -214,6 +214,7 @@ const main = (tlds) => {
                 process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} Adding ${chalk.blueBright(++tldCount)} top-level domains to ${chalk.blueBright(domainCount)} domain names`)
                 readline.moveCursor(process.stdout, 0, -1)
             })
+
             if (arguments_.domain.length > 1 && arguments_.domain.length !== domainCount) {
                 process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} Adding ${chalk.blueBright(tldCount)} top-level domains to ${chalk.blueBright(++domainCount)} domain names`)
                 readline.moveCursor(process.stdout, 0, -4)
@@ -230,21 +231,21 @@ const main = (tlds) => {
 
         console.log("\n\n")
     } else
-        arguments_.domain.forEach(d => (tld => tlds.map(`${d}.${tld}`)).forEach(uri => order.push(uri)))
+        arguments_.domain.forEach(d => tlds.map(tld => `${d}.${tld}`).forEach(uri => order.push(uri)))
 
     gets(order)
 
     setTimeout(() => {
         if (!arguments_["no-box"])
-            console.log(boxen(`${chalk.bold.underline("--- Result---")}\n\n${chalk.bold.blueBright(aliveDomain.join("\n"))}\n\n${chalk.bold.cyanBright(aliveDomain.length)} ${chalk.greenBright(aliveDomain.length > 1 ? "domains alive" : "domain alive")}`, {
+            console.log(boxen(`${chalk.bold.underline("--- Result---")}\n\n${chalk.bold.blueBright(aliveDomain.join("\n"))}\n\n${arguments_.verbose ? `${chalk.bold.magentaBright(order.length)} ${chalk.bold("/")} ${chalk.bold.cyanBright(aliveDomain.length)}` : chalk.bold.cyanBright(aliveDomain.length)} ${chalk.greenBright(aliveDomain.length > 1 ? "domains alive" : "domain alive")}`, {
                 padding: 1,
                 borderColor: "yellow",
                 margin: 2,
-                align: "center"
+                align: "center",
+                borderStyle: "round"
             }))
         else
-            console.log(aliveDomain.join("\n"))
-
+            process.stdout.write(aliveDomain.join("\n"))
     }, 10000)
 }
 
@@ -266,15 +267,17 @@ https.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt", (response) => {
             lockFlag = true
     })
 }).on("error", (error) => {
-    console.error(error)
-    console.log(`${chalk.redBright(figures.pointer)} ${chalk.bold("Please report this issue to")} ${terminalLink("Github Issues", "https://github.com/P2P-Develop/TopDomainChecker/issues")}`)
+    (async () => {
+        console.error(error)
+        console.log(`${chalk.redBright(figures.pointer)} ${chalk.bold("Please report this issue to")} ${terminalLink("Github Issues", "https://github.com/P2P-Develop/TopDomainChecker/issues")}`)
 
-    const copyAnswer = (async () => await inquirer.prompt({
-        type: "confirm",
-        name: "copy",
-        message: "Copy stack-trace to clip board?"
-    }))().then(answer => answer)
+        const copyAnswer = await Enquirer.prompt({
+            type: "confirm",
+            name: "cp",
+            message: "Copy stack-trace to clip board?"
+        }).cp
 
-    if (copyAnswer)
-        ncp.copy(error)
+        if (copyAnswer)
+            ncp.copy(error)
+    })()
 })
