@@ -10,6 +10,7 @@ import commandLineArgs from "command-line-args"
 import commandLineUsage from "command-line-usage"
 import figures from "figures"
 import ping from "ping"
+import ora from "ora"
 import prettyerror from "pretty-error"
 import terminalLink from "terminal-link"
 
@@ -98,17 +99,17 @@ const usage = commandLineUsage([
 ])
 
 const arguments_ = commandLineArgs([
-    {name: "version", alias: "V", type: Boolean, defaultValue: false},
-    {name: "verbose", alias: "v", type: Boolean, defaultValue: false},
-    {name: "domain", alias: "d", type: String, multiple: true, defaultOption: true},
-    {name: "help", alias: "h", type: Boolean, defaultOption: false},
-    {name: "quiet", alias: "q", type: Boolean, defaultValue: false},
-    {name: "no-box", alias: "Q", type: Boolean, defaultValue: false},
-    {name: "add-tld", alias: "t"}
+    { name: "version", alias: "V", type: Boolean, defaultValue: false },
+    { name: "verbose", alias: "v", type: Boolean, defaultValue: false },
+    { name: "domain", alias: "d", type: String, multiple: true, defaultOption: true },
+    { name: "help", alias: "h", type: Boolean, defaultOption: false },
+    { name: "quiet", alias: "q", type: Boolean, defaultValue: false },
+    { name: "no-box", alias: "Q", type: Boolean, defaultValue: false },
+    { name: "add-tld", alias: "t" }
 ])
 
 if (arguments_.version) {
-    console.log("v2.0.0")
+    console.log("v3.0.0")
     process.exit()
 }
 
@@ -142,11 +143,9 @@ if (!("domain" in arguments_)) {
         type: "list",
         name: "domains",
         message: "Which domain do you want to check (comma-separated)"
-    }).domains
+    })
 
-    arguments_.domain = [...domainAnswer]
-
-    cliCursor.hide()
+    arguments_.domain = [...domainAnswer.domains]
 }
 
 const addTld = []
@@ -158,51 +157,46 @@ if (arguments_["add-tld"] === null) {
         type: "list",
         name: "tlds",
         message: "Which top-level domain do you want to check (comma-separated):"
-    }).tlds
+    })
 
-    addTld.push(...tldAnswer)
-
-    cliCursor.hide()
+    addTld.push(...tldAnswer.tlds)
 }
 
 // Ping
-const gets = (domains) => {
-    domains.forEach((domain) => {
-        ping.promise.probe(domain)
-            .then((response) => {
-                if (response.alive) {
-                    aliveDomain.push(domain)
-                    if (!arguments_.quiet) {
-                        process.stdout.write(`\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}` +
-                            " ".repeat(process.stdout.columns - `\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}`.length))
-                        if (!arguments_.verbose)
-                            readline.moveCursor(process.stdout, 0, -1)
-                        else
-                            console.log()
-                    }
+const gets = domains => domains.forEach(domain => ping.promise.probe(domain).then((response) => {
+    if (response.alive) {
+        aliveDomain.push(domain)
+        if (!arguments_.quiet) {
+            process.stdout.write(`\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}` +
+                " ".repeat(process.stdout.columns - `\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}`.length))
+            if (!arguments_.verbose) 
+                readline.moveCursor(process.stdout, 0, -1)
+            else 
+                console.log()
+            
+        }
 
-                    return Promise.resolve()
-                }
+        return Promise.resolve()
+    }
 
-                if (!arguments_.quiet) {
-                    process.stdout.write(`\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}` +
-                        " ".repeat(process.stdout.columns - `\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}`.length))
+    if (!arguments_.quiet) {
+        process.stdout.write(`\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}` +
+            " ".repeat(process.stdout.columns - `\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}`.length))
 
-                    if (arguments_.verbose)
-                        console.log()
-                    else
-                        readline.moveCursor(process.stdout, 0, -1)
-                }
+        if (arguments_.verbose) 
+            console.log()
+        else 
+            readline.moveCursor(process.stdout, 0, -1)
+        
+    }
 
-                return Promise.resolve()
-            })
-    })
-}
+    return Promise.resolve()
+}))
 
 const main = (tlds) => {
-    const order = []
+    cliCursor.hide()
 
-    if (!arguments_.quiet) console.log()
+    const order = []
 
     if (arguments_.verbose) {
         let domainCount = 1
@@ -251,11 +245,15 @@ const main = (tlds) => {
 
 let lockFlag = false
 
-if (arguments_.verbose) console.log(`\n${chalk.greenBright(figures.pointer)} Fetching top-level domains information from IANA...`)
+const spinner = arguments_.verbose ? ora("Fetching top-level domains information from IANA...") : undefined
+
+if (spinner) spinner.start()
 
 https.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt", (response) => {
     response.on("data", (chunk) => {
-        if (!lockFlag)
+        if (!lockFlag) {
+            if (spinner) spinner.succeed()
+
             main([
                 ...(`${chunk}`
                     .toLowerCase()
@@ -263,7 +261,7 @@ https.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt", (response) => {
                     .filter(tld => !tld.startsWith("#") || !tld)),
                 ...addTld
             ])
-        else
+        } else
             lockFlag = true
     })
 }).on("error", (error) => {
@@ -275,9 +273,9 @@ https.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt", (response) => {
             type: "confirm",
             name: "cp",
             message: "Copy stack-trace to clip board?"
-        }).cp
+        })
 
-        if (copyAnswer)
+        if (copyAnswer.cp)
             ncp.copy(error)
     })()
 })
