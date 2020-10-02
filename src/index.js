@@ -10,6 +10,7 @@ import commandLineArgs from "command-line-args"
 import commandLineUsage from "command-line-usage"
 import figures from "figures"
 import ping from "ping"
+import ora from "ora"
 import prettyerror from "pretty-error"
 import terminalLink from "terminal-link"
 
@@ -108,7 +109,7 @@ const arguments_ = commandLineArgs([
 ])
 
 if (arguments_.version) {
-    console.log("v2.0.0")
+    console.log("v3.0.0")
     process.exit()
 }
 
@@ -142,11 +143,9 @@ if (!("domain" in arguments_)) {
         type: "list",
         name: "domains",
         message: "Which domain do you want to check (comma-separated)"
-    }).domains
+    })
 
-    arguments_.domain = [...domainAnswer]
-
-    cliCursor.hide()
+    arguments_.domain = [...domainAnswer.domains]
 }
 
 const addTld = []
@@ -158,11 +157,9 @@ if (arguments_["add-tld"] === null) {
         type: "list",
         name: "tlds",
         message: "Which top-level domain do you want to check (comma-separated):"
-    }).tlds
+    })
 
-    addTld.push(...tldAnswer)
-
-    cliCursor.hide()
+    addTld.push(...tldAnswer.tlds)
 }
 
 // Ping
@@ -200,9 +197,9 @@ const gets = (domains) => {
 }
 
 const main = (tlds) => {
-    const order = []
+    cliCursor.hide()
 
-    if (!arguments_.quiet) console.log()
+    const order = []
 
     if (arguments_.verbose) {
         let domainCount = 1
@@ -251,11 +248,14 @@ const main = (tlds) => {
 
 let lockFlag = false
 
-if (arguments_.verbose) console.log(`\n${chalk.greenBright(figures.pointer)} Fetching top-level domains information from IANA...`)
+const spinner = arguments_.verbose ? ora("Fetching top-level domains information from IANA...") : undefined
+
+if (spinner) spinner.start()
 
 https.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt", (response) => {
     response.on("data", (chunk) => {
-        if (!lockFlag)
+        if (!lockFlag) {
+            if (spinner) spinner.succeed()
             main([
                 ...(`${chunk}`
                     .toLowerCase()
@@ -263,7 +263,7 @@ https.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt", (response) => {
                     .filter(tld => !tld.startsWith("#") || !tld)),
                 ...addTld
             ])
-        else
+        } else
             lockFlag = true
     })
 }).on("error", (error) => {
@@ -275,9 +275,9 @@ https.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt", (response) => {
             type: "confirm",
             name: "cp",
             message: "Copy stack-trace to clip board?"
-        }).cp
+        })
 
-        if (copyAnswer)
+        if (copyAnswer.cp)
             ncp.copy(error)
     })()
 })
