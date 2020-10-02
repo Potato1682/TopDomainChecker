@@ -99,13 +99,13 @@ const usage = commandLineUsage([
 ])
 
 const arguments_ = commandLineArgs([
-    {name: "version", alias: "V", type: Boolean, defaultValue: false},
-    {name: "verbose", alias: "v", type: Boolean, defaultValue: false},
-    {name: "domain", alias: "d", type: String, multiple: true, defaultOption: true},
-    {name: "help", alias: "h", type: Boolean, defaultOption: false},
-    {name: "quiet", alias: "q", type: Boolean, defaultValue: false},
-    {name: "no-box", alias: "Q", type: Boolean, defaultValue: false},
-    {name: "add-tld", alias: "t"}
+    { name: "version", alias: "V", type: Boolean, defaultValue: false },
+    { name: "verbose", alias: "v", type: Boolean, defaultValue: false },
+    { name: "domain", alias: "d", type: String, multiple: true, defaultOption: true },
+    { name: "help", alias: "h", type: Boolean, defaultOption: false },
+    { name: "quiet", alias: "q", type: Boolean, defaultValue: false },
+    { name: "no-box", alias: "Q", type: Boolean, defaultValue: false },
+    { name: "add-tld", alias: "t" }
 ])
 
 if (arguments_.version) {
