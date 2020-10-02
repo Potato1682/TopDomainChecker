@@ -164,36 +164,33 @@ if (arguments_["add-tld"] === null) {
 
 // Ping
 const gets = (domains) => {
-    domains.forEach((domain) => {
-        ping.promise.probe(domain)
-            .then((response) => {
-                if (response.alive) {
-                    aliveDomain.push(domain)
-                    if (!arguments_.quiet) {
-                        process.stdout.write(`\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}` +
-                            " ".repeat(process.stdout.columns - `\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}`.length))
-                        if (!arguments_.verbose)
-                            readline.moveCursor(process.stdout, 0, -1)
-                        else
-                            console.log()
-                    }
+    domains.forEach(domain => ping.promise.probe(domain).then((response) => {
+        if (response.alive) {
+            aliveDomain.push(domain)
+            if (!arguments_.quiet) {
+                process.stdout.write(`\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}` +
+                    " ".repeat(process.stdout.columns - `\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}`.length))
+                if (!arguments_.verbose) 
+                    readline.moveCursor(process.stdout, 0, -1)
+                else 
+                    console.log()
+            }
 
-                    return Promise.resolve()
-                }
+            return Promise.resolve()
+        }
 
-                if (!arguments_.quiet) {
-                    process.stdout.write(`\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}` +
-                        " ".repeat(process.stdout.columns - `\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}`.length))
+        if (!arguments_.quiet) {
+            process.stdout.write(`\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}` +
+                " ".repeat(process.stdout.columns - `\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}`.length))
 
-                    if (arguments_.verbose)
-                        console.log()
-                    else
-                        readline.moveCursor(process.stdout, 0, -1)
-                }
+            if (arguments_.verbose) 
+                console.log()
+            else 
+                readline.moveCursor(process.stdout, 0, -1)
+        }
 
-                return Promise.resolve()
-            })
-    })
+        return Promise.resolve()
+    }))
 }
 
 const main = (tlds) => {
