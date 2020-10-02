@@ -15,6 +15,7 @@ plugins:
     - node
     - unicorn
     - yaml
+parser: "@babel/eslint-parser"
 parserOptions:
     sourceType: module
     ecmaVersion: 2020
