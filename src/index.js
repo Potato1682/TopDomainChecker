@@ -136,7 +136,7 @@ const aliveDomain = []
 const stdin = await getStdin()
 
 if (stdin)
-    arguments_.domain = [ ...arguments_.domain, ...stdin.trim().split(" ") ] // If stdin has an input, merge domains
+    arguments_.domain = [ ...arguments_.domain ?? [], ...stdin.trim().split(" ") ] // If stdin has an input, merge domains
 
 // If also not, show cursor and interactive prompt
 if (!("domain" in arguments_)) {
@@ -278,6 +278,8 @@ https.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt", (response) => {
     })
 }).on("error", (error) => {
     (async () => {
+        if (spinner) spinner.fail(`Fetching top-level domains information from IANA...${chalk.redBright("Failed")}`)
+
         console.error(error)
         console.log(`${chalk.redBright(figures.pointer)} ${chalk.bold("Please report this issue to")} ${terminalLink("Github Issues", "https://github.com/P2P-Develop/TopDomainChecker/issues")}`)
 
