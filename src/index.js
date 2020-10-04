@@ -172,7 +172,9 @@ const main = (tlds) => {
 
     if (arguments_["dry-run"]) {
         arguments_.domain.forEach(d => tlds.map(tld => `${d}.${tld}`).forEach(uri => order.push(uri)))
-        console.log(`${chalk.bold.blue(figures.info)} Checker will be check the operating status of ${chalk.blueBright(order.length)} domain${order.length > 1 ? "s" : ""}`)
+        console.log(arguments_.verbose
+            ? `${chalk.bold.blue(figures.info)} Checker will be check the operating status of ${chalk.blueBright(tlds.length)} top-level domains * ${arguments_.domain.length} domain names`
+            : `${chalk.bold.blue(figures.info)} Checker will be check the operating status of ${chalk.blueBright(order.length)} domain${order.length > 1 ? "s" : ""}`)
 
         process.exit(0)
     }
