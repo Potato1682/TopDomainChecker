@@ -9,10 +9,10 @@ import ncp from "copy-paste"
 import commandLineArgs from "command-line-args"
 import commandLineUsage from "command-line-usage"
 import figures from "figures"
-import ping from "ping"
 import ora from "ora"
 import prettyerror from "pretty-error"
 import terminalLink from "terminal-link"
+import API from "./api.js"
 
 // Call console beautify functions
 prettyerror.start()
@@ -162,37 +162,6 @@ if (arguments_["add-tld"] === null) {
     addTld.push(...tldAnswer.tlds)
 }
 
-// Ping
-const gets = domains => domains.forEach(domain => ping.promise.probe(domain).then((response) => {
-    if (response.alive) {
-        aliveDomain.push(domain)
-        if (!arguments_.quiet) {
-            process.stdout.write(`\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}` +
-                " ".repeat(process.stdout.columns - `\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}`.length))
-            if (!arguments_.verbose) 
-                readline.moveCursor(process.stdout, 0, -1)
-            else 
-                console.log()
-            
-        }
-
-        return Promise.resolve()
-    }
-
-    if (!arguments_.quiet) {
-        process.stdout.write(`\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}` +
-            " ".repeat(process.stdout.columns - `\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}`.length))
-
-        if (arguments_.verbose) 
-            console.log()
-        else 
-            readline.moveCursor(process.stdout, 0, -1)
-        
-    }
-
-    return Promise.resolve()
-}))
-
 const main = (tlds) => {
     cliCursor.hide()
 
@@ -227,9 +196,31 @@ const main = (tlds) => {
     } else
         arguments_.domain.forEach(d => tlds.map(tld => `${d}.${tld}`).forEach(uri => order.push(uri)))
 
-    gets(order)
+    Promise.all(order.map(async (domain) => {
+        if (await API.check(domain)) {
+            aliveDomain.push(domain)
+            if (!arguments_.quiet) {
+                process.stdout.write(`\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}` +
+                    " ".repeat(process.stdout.columns - `\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}`.length))
+                if (!arguments_.verbose)
+                    readline.moveCursor(process.stdout, 0, -1)
+                else
+                    console.log()
 
-    setTimeout(() => {
+                return
+            }
+        }
+
+        if (!arguments_.quiet) {
+            process.stdout.write(`\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}` +
+                " ".repeat(process.stdout.columns - `\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}`.length))
+
+            if (arguments_.verbose)
+                console.log()
+            else
+                readline.moveCursor(process.stdout, 0, -1)
+        }
+    })).then(() => {
         if (!arguments_["no-box"])
             console.log(boxen(`${chalk.bold.underline("--- Result---")}\n\n${chalk.bold.blueBright(aliveDomain.join("\n"))}\n\n${arguments_.verbose ? `${chalk.bold.magentaBright(order.length)} ${chalk.bold("/")} ${chalk.bold.cyanBright(aliveDomain.length)}` : chalk.bold.cyanBright(aliveDomain.length)} ${chalk.greenBright(aliveDomain.length > 1 ? "domains alive" : "domain alive")}`, {
                 padding: 1,
@@ -240,7 +231,7 @@ const main = (tlds) => {
             }))
         else
             process.stdout.write(aliveDomain.join("\n"))
-    }, 10000)
+    })
 }
 
 let lockFlag = false
