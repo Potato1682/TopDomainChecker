@@ -122,7 +122,7 @@ if (arguments_.help) {
     process.exit(0)
 }
 
-if (arguments_.quiet && arguments_.verbose) {
+if (!arguments_["dry-run"] && arguments_.quiet && arguments_.verbose) {
     // quiet and verbose cannot be used at the same time
     console.warn(`${chalk.yellowBright.inverse.bold(`  ${figures.warning}  `)} ${chalk.bold("--quiet")} and ${chalk.bold("--verbose")} cannot be used at same time! Replaced with default value!`)
     arguments_.quiet = false
@@ -136,7 +136,7 @@ const aliveDomain = []
 const stdin = await getStdin()
 
 if (stdin)
-    arguments_.domain = [ ...arguments_.domain, ...stdin.trim().split(" ") ] // If stdin has an input, merge domains
+    arguments_.domain = [ ...arguments_.domain ?? [], ...stdin.trim().split(" ") ] // If stdin has an input, merge domains
 
 // If also not, show cursor and interactive prompt
 if (!("domain" in arguments_)) {
@@ -172,7 +172,18 @@ const main = (tlds) => {
 
     if (arguments_["dry-run"]) {
         arguments_.domain.forEach(d => tlds.map(tld => `${d}.${tld}`).forEach(uri => order.push(uri)))
-        console.log(`${chalk.bold.blue(figures.info)} Checker will be check the operating status of ${chalk.blueBright(order.length)} domain${order.length > 1 ? "s" : ""}`)
+
+        if (arguments_.quiet) {
+            console.log(arguments_.verbose
+                ? `${tlds.length} * ${arguments_.domain.length}`
+                : `${order.length}`)
+
+            process.exit(0)
+        }
+
+        console.log(arguments_.verbose
+            ? `${chalk.bold.blue(figures.info)} Checker will be check the operating status of ${chalk.blueBright(tlds.length)} top-level domains in ${chalk.blueBright(arguments_.domain.length)} domain name${arguments_.domain.length > 1 ? "s" : ""}`
+            : `${chalk.bold.blue(figures.info)} Checker will be check the operating status of ${chalk.blueBright(order.length)} domain${order.length > 1 ? "s" : ""}`)
 
         process.exit(0)
     }
@@ -253,7 +264,7 @@ if (spinner) spinner.start()
 https.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt", (response) => {
     response.on("data", (chunk) => {
         if (!lockFlag) {
-            if (spinner) spinner.succeed()
+            if (spinner) spinner.succeed(`Fetching top-level domains information from IANA...${chalk.greenBright("Success")}`)
 
             main([
                 ...(`${chunk}`
@@ -267,6 +278,8 @@ https.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt", (response) => {
     })
 }).on("error", (error) => {
     (async () => {
+        if (spinner) spinner.fail(`Fetching top-level domains information from IANA...${chalk.redBright("Failed")}`)
+
         console.error(error)
         console.log(`${chalk.redBright(figures.pointer)} ${chalk.bold("Please report this issue to")} ${terminalLink("Github Issues", "https://github.com/P2P-Develop/TopDomainChecker/issues")}`)
 
