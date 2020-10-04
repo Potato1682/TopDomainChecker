@@ -1,6 +1,6 @@
 {
     "name": "tld-checker",
-    "version": "2.0.0",
+    "version": "3.1.0",
     "description": "Brute-force the top-level domains with parallel.",
     "main": "src/index.js",
     "type": "module",
@@ -13,6 +13,9 @@
         "lint:js": "eslint .",
         "lint:md": "remark .",
         "fix": "eslint --fix ."
+    },
+    "bin": {
+        "tldcheck": "src/index.js"
     },
     "repository": {
         "type": "git",
@@ -51,7 +54,6 @@
         "eslint-plugin-node": "^11.1.0",
         "eslint-plugin-unicorn": "^22.0.0",
         "eslint-plugin-yaml": "^0.3.0",
-        "extend": "^3.0.2",
         "nexe": "^4.0.0-beta.14",
         "npm-run-all": "^4.1.5",
         "remark-cli": "^8.0.1",
@@ -61,7 +63,6 @@
         "remark-lint-no-dead-urls": "^1.1.0",
         "remark-lint-no-empty-sections": "^4.0.0",
         "remark-lint-no-url-trailing-slash": "^3.0.1",
-        "remark-preset-lint-recommended": "^4.0.1",
-        "repeat-string": "^1.6.1"
+        "remark-preset-lint-recommended": "^4.0.1"
     }
 }

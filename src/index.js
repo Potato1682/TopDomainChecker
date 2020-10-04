@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import https from "https"
 import readline from "readline"
 import Enquirer from "enquirer"
@@ -9,10 +11,10 @@ import ncp from "copy-paste"
 import commandLineArgs from "command-line-args"
 import commandLineUsage from "command-line-usage"
 import figures from "figures"
-import ping from "ping"
 import ora from "ora"
 import prettyerror from "pretty-error"
 import terminalLink from "terminal-link"
+import API from "./api.js"
 
 // Call console beautify functions
 prettyerror.start()
@@ -59,7 +61,7 @@ const usage = commandLineUsage([
             },
             {
                 name: "dry-run",
-                alias: "d",
+                alias: "D",
                 description: "Show how many domains to check.",
                 type: Boolean,
                 defaultValue: false
@@ -105,18 +107,19 @@ const arguments_ = commandLineArgs([
     { name: "help", alias: "h", type: Boolean, defaultOption: false },
     { name: "quiet", alias: "q", type: Boolean, defaultValue: false },
     { name: "no-box", alias: "Q", type: Boolean, defaultValue: false },
-    { name: "add-tld", alias: "t" }
+    { name: "add-tld", alias: "t" },
+    { name: "dry-run", alias: "D", type: Boolean, defaultValue: false }
 ])
 
 if (arguments_.version) {
     console.log("v3.0.0")
-    process.exit()
+    process.exit(0)
 }
 
 if (arguments_.help) {
     // Show usages if has argument "--help"
     console.log(usage)
-    process.exit()
+    process.exit(0)
 }
 
 if (arguments_.quiet && arguments_.verbose) {
@@ -142,7 +145,7 @@ if (!("domain" in arguments_)) {
     const domainAnswer = await Enquirer.prompt({
         type: "list",
         name: "domains",
-        message: "Which domain do you want to check (comma-separated)"
+        message: "Which domain names do you want to check (comma-separated)"
     })
 
     arguments_.domain = [...domainAnswer.domains]
@@ -156,47 +159,23 @@ if (arguments_["add-tld"] === null) {
     const tldAnswer = await Enquirer.prompt({
         type: "list",
         name: "tlds",
-        message: "Which top-level domain do you want to check (comma-separated):"
+        message: "Which top-level domains do you want to check (comma-separated)"
     })
 
     addTld.push(...tldAnswer.tlds)
-}
-
-// Ping
-const gets = (domains) => {
-    domains.forEach(domain => ping.promise.probe(domain).then((response) => {
-        if (response.alive) {
-            aliveDomain.push(domain)
-            if (!arguments_.quiet) {
-                process.stdout.write(`\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}` +
-                    " ".repeat(process.stdout.columns - `\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}`.length))
-                if (!arguments_.verbose) 
-                    readline.moveCursor(process.stdout, 0, -1)
-                else 
-                    console.log()
-            }
-
-            return Promise.resolve()
-        }
-
-        if (!arguments_.quiet) {
-            process.stdout.write(`\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}` +
-                " ".repeat(process.stdout.columns - `\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}`.length))
-
-            if (arguments_.verbose) 
-                console.log()
-            else 
-                readline.moveCursor(process.stdout, 0, -1)
-        }
-
-        return Promise.resolve()
-    }))
 }
 
 const main = (tlds) => {
     cliCursor.hide()
 
     const order = []
+
+    if (arguments_["dry-run"]) {
+        arguments_.domain.forEach(d => tlds.map(tld => `${d}.${tld}`).forEach(uri => order.push(uri)))
+        console.log(`${chalk.bold.blue(figures.info)} Checker will be check the operating status of ${chalk.blueBright(order.length)} domain${order.length > 1 ? "s" : ""}`)
+
+        process.exit(0)
+    }
 
     if (arguments_.verbose) {
         let domainCount = 1
@@ -227,9 +206,31 @@ const main = (tlds) => {
     } else
         arguments_.domain.forEach(d => tlds.map(tld => `${d}.${tld}`).forEach(uri => order.push(uri)))
 
-    gets(order)
+    Promise.all(order.map(async (domain) => {
+        if (await API.check(domain)) {
+            aliveDomain.push(domain)
+            if (!arguments_.quiet) {
+                process.stdout.write(`\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}` +
+                    " ".repeat(process.stdout.columns - `\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}`.length))
+                if (!arguments_.verbose)
+                    readline.moveCursor(process.stdout, 0, -1)
+                else
+                    console.log()
 
-    setTimeout(() => {
+                return
+            }
+        }
+
+        if (!arguments_.quiet) {
+            process.stdout.write(`\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}` +
+                " ".repeat(process.stdout.columns - `\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}`.length))
+
+            if (arguments_.verbose)
+                console.log()
+            else
+                readline.moveCursor(process.stdout, 0, -1)
+        }
+    })).then(() => {
         if (!arguments_["no-box"])
             console.log(boxen(`${chalk.bold.underline("--- Result---")}\n\n${chalk.bold.blueBright(aliveDomain.join("\n"))}\n\n${arguments_.verbose ? `${chalk.bold.magentaBright(order.length)} ${chalk.bold("/")} ${chalk.bold.cyanBright(aliveDomain.length)}` : chalk.bold.cyanBright(aliveDomain.length)} ${chalk.greenBright(aliveDomain.length > 1 ? "domains alive" : "domain alive")}`, {
                 padding: 1,
@@ -240,7 +241,7 @@ const main = (tlds) => {
             }))
         else
             process.stdout.write(aliveDomain.join("\n"))
-    }, 10000)
+    })
 }
 
 let lockFlag = false
@@ -253,6 +254,7 @@ https.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt", (response) => {
     response.on("data", (chunk) => {
         if (!lockFlag) {
             if (spinner) spinner.succeed()
+
             main([
                 ...(`${chunk}`
                     .toLowerCase()
