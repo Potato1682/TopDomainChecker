@@ -207,9 +207,11 @@ const main = (tlds) => {
             readline.moveCursor(process.stdout, 0, 3)
         })
     } else if (!arguments_.quiet) {
-        arguments_.domain.forEach(d => tlds.map(tld => `${d}.${tld}`).forEach((uri, i) => {
+        let count = 0
+
+        arguments_.domain.forEach(d => tlds.map(tld => `${d}.${tld}`).forEach((uri) => {
             order.push(uri)
-            process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} Adding ${chalk.bold.blueBright(i + 1)} domains`)
+            process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} Adding ${chalk.bold.blueBright(++count)} domains`)
             readline.moveCursor(process.stdout, 0, -1)
         }))
 
