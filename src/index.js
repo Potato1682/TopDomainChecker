@@ -112,7 +112,7 @@ const arguments_ = commandLineArgs([
 ])
 
 if (arguments_.version) {
-    console.log("v3.0.0")
+    console.log("v3.1.1")
     process.exit(0)
 }
 
