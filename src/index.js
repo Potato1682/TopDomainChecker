@@ -123,7 +123,7 @@ if (arguments_.help) {
 }
 
 if (!arguments_["dry-run"] && arguments_.quiet && arguments_.verbose) {
-    // quiet and verbose cannot be used at the same time
+    // quiet and verbose cannot be used at the same time without --dry-run
     console.warn(`${chalk.yellowBright.inverse.bold(`  ${figures.warning}  `)} ${chalk.bold("--quiet")} and ${chalk.bold("--verbose")} cannot be used at same time! Replaced with default value!`)
     arguments_.quiet = false
     arguments_.verbose = false
@@ -151,7 +151,7 @@ if (!("domain" in arguments_)) {
     arguments_.domain = [...domainAnswer.domains]
 }
 
-const addTld = []
+const addTld = [ "co.jp", "or,jp", "ne.jp", "ac.jp", "ad.jp", "ed.jp", "go.jp", "gr.jp", "lg.jp" ]
 
 if (arguments_["add-tld"] === null) {
     cliCursor.show()
