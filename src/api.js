@@ -1,11 +1,18 @@
+"use strict"
+
 import https from "https"
 import ping from "ping"
 
-export default class API {
+/**
+ * TopDomainChecker API Class.
+ */
+export default class TLDCheck {
     /**
+     * Check single domain.
+     * This required await.
      *
-     * @param domain {string}
-     * @returns {Promise<boolean>}
+     * @param domain {string} The domain
+     * @returns {Promise<boolean>} Pinging promise
      */
     static check(domain) {
         return ping.promise.probe(domain).then(response => response.alive)

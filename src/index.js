@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+"use strict"
+
 import https from "https"
 import readline from "readline"
 import Enquirer from "enquirer"
@@ -14,7 +16,7 @@ import figures from "figures"
 import ora from "ora"
 import prettyerror from "pretty-error"
 import terminalLink from "terminal-link"
-import API from "./api.js"
+import TLDCheck from "./api.js"
 
 // Call console beautify functions
 prettyerror.start()
@@ -220,7 +222,7 @@ const main = (tlds) => {
         arguments_.domain.forEach(d => tlds.map(tld => `${d}.${tld}`).forEach(uri => order.push(uri)))
 
     Promise.all(order.map(async (domain) => {
-        if (await API.check(domain)) {
+        if (await TLDCheck.check(domain)) {
             aliveDomain.push(domain)
             if (!arguments_.quiet) {
                 process.stdout.write(`\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}` +

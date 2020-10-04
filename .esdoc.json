@@ -1,0 +1,35 @@
+{
+    "source": "./src",
+    "destination": "./esdoc",
+    "plugins": [
+        {
+            "name": "esdoc-standard-plugin",
+            "option": {
+                "lint": {
+                    "enable": true
+                },
+                "coverage": {
+                    "enable": true
+                },
+                "accessor": {
+                    "access": ["public", "protected", "private"],
+                    "autoPrivate": true
+                },
+                "typeInference": {
+                    "enable": true
+                },
+                "brand": {
+                    "title": "TopDomainChecker",
+                    "description": "Brute-force top-level domains with parallel.",
+                    "repository": "https://github.com/P2P-Develop/TopDomainChecker",
+                    "site": "https://tldcheck.p2p-dev.team",
+                    "author": "P2P-Develop"
+                },
+                "manual": {
+                    "index": "./docs/README-en.md",
+                    "globalIndex": true
+                }
+            }
+        }
+    ]
+}
