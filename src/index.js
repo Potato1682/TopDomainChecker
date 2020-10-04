@@ -122,7 +122,7 @@ if (arguments_.help) {
     process.exit(0)
 }
 
-if (arguments_.quiet && arguments_.verbose) {
+if (!arguments_["dry-run"] && arguments_.quiet && arguments_.verbose) {
     // quiet and verbose cannot be used at the same time
     console.warn(`${chalk.yellowBright.inverse.bold(`  ${figures.warning}  `)} ${chalk.bold("--quiet")} and ${chalk.bold("--verbose")} cannot be used at same time! Replaced with default value!`)
     arguments_.quiet = false
@@ -172,6 +172,15 @@ const main = (tlds) => {
 
     if (arguments_["dry-run"]) {
         arguments_.domain.forEach(d => tlds.map(tld => `${d}.${tld}`).forEach(uri => order.push(uri)))
+
+        if (arguments_.quiet) {
+            console.log(arguments_.verbose
+                ? `${tlds.length} * ${arguments_.domain.length}`
+                : `${order.length}`)
+
+            process.exit(0)
+        }
+
         console.log(arguments_.verbose
             ? `${chalk.bold.blue(figures.info)} Checker will be check the operating status of ${chalk.blueBright(tlds.length)} top-level domains in ${chalk.blueBright(arguments_.domain.length)} domain name${arguments_.domain.length > 1 ? "s" : ""}`
             : `${chalk.bold.blue(figures.info)} Checker will be check the operating status of ${chalk.blueBright(order.length)} domain${order.length > 1 ? "s" : ""}`)
