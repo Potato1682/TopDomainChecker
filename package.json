@@ -14,6 +14,9 @@
         "lint:md": "remark .",
         "fix": "eslint --fix ."
     },
+    "bin" : {
+        "tldcheck": "src/index.js"
+    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/P2P-Develop/TopDomainChecker.git"
