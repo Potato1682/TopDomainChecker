@@ -1,6 +1,6 @@
 {
     "name": "tld-checker",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "description": "Brute-force the top-level domains with parallel.",
     "main": "src/index.js",
     "type": "module",

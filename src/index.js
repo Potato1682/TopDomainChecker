@@ -59,7 +59,7 @@ const usage = commandLineUsage([
             },
             {
                 name: "dry-run",
-                alias: "d",
+                alias: "D",
                 description: "Show how many domains to check.",
                 type: Boolean,
                 defaultValue: false
@@ -105,18 +105,19 @@ const arguments_ = commandLineArgs([
     { name: "help", alias: "h", type: Boolean, defaultOption: false },
     { name: "quiet", alias: "q", type: Boolean, defaultValue: false },
     { name: "no-box", alias: "Q", type: Boolean, defaultValue: false },
-    { name: "add-tld", alias: "t" }
+    { name: "add-tld", alias: "t" },
+    { name: "dry-run", alias: "D", type: Boolean, defaultValue: false }
 ])
 
 if (arguments_.version) {
     console.log("v3.0.0")
-    process.exit()
+    process.exit(0)
 }
 
 if (arguments_.help) {
     // Show usages if has argument "--help"
     console.log(usage)
-    process.exit()
+    process.exit(0)
 }
 
 if (arguments_.quiet && arguments_.verbose) {
@@ -142,7 +143,7 @@ if (!("domain" in arguments_)) {
     const domainAnswer = await Enquirer.prompt({
         type: "list",
         name: "domains",
-        message: "Which domain do you want to check (comma-separated)"
+        message: "Which domain names do you want to check (comma-separated)"
     })
 
     arguments_.domain = [...domainAnswer.domains]
@@ -156,7 +157,7 @@ if (arguments_["add-tld"] === null) {
     const tldAnswer = await Enquirer.prompt({
         type: "list",
         name: "tlds",
-        message: "Which top-level domain do you want to check (comma-separated):"
+        message: "Which top-level domains do you want to check (comma-separated)"
     })
 
     addTld.push(...tldAnswer.tlds)
@@ -166,6 +167,13 @@ const main = (tlds) => {
     cliCursor.hide()
 
     const order = []
+
+    if (arguments_["dry-run"]) {
+        arguments_.domain.forEach(d => tlds.map(tld => `${d}.${tld}`).forEach(uri => order.push(uri)))
+        console.log(`${chalk.bold.blue(figures.info)} Checker will be check the operating status of ${chalk.blueBright(order.length)} domain${order.length > 1 ? "s" : ""}`)
+
+        process.exit(0)
+    }
 
     if (arguments_.verbose) {
         let domainCount = 1
