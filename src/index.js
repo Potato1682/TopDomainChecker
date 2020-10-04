@@ -173,7 +173,7 @@ const main = (tlds) => {
     if (arguments_["dry-run"]) {
         arguments_.domain.forEach(d => tlds.map(tld => `${d}.${tld}`).forEach(uri => order.push(uri)))
         console.log(arguments_.verbose
-            ? `${chalk.bold.blue(figures.info)} Checker will be check the operating status of ${chalk.blueBright(tlds.length)} top-level domains * ${arguments_.domain.length} domain names`
+            ? `${chalk.bold.blue(figures.info)} Checker will be check the operating status of ${chalk.blueBright(tlds.length)} top-level domains in ${chalk.blueBright(arguments_.domain.length)} domain name${arguments_.domain.length > 1 ? "s" : ""}`
             : `${chalk.bold.blue(figures.info)} Checker will be check the operating status of ${chalk.blueBright(order.length)} domain${order.length > 1 ? "s" : ""}`)
 
         process.exit(0)
@@ -255,7 +255,7 @@ if (spinner) spinner.start()
 https.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt", (response) => {
     response.on("data", (chunk) => {
         if (!lockFlag) {
-            if (spinner) spinner.succeed()
+            if (spinner) spinner.succeed(`Fetching top-level domains information from IANA...${chalk.greenBright("Success")}`)
 
             main([
                 ...(`${chunk}`
