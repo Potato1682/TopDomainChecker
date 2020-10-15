@@ -14,8 +14,9 @@ export default class TLDCheck {
      * @param domain {string} The domain
      * @returns {Promise<boolean>} Pinging promise
      */
-    static check(domain) {
-        return ping.promise.probe(domain).then(response => response.alive)
+    static async check(domain) {
+        const response = await ping.promise.probe(domain)
+        return response.alive
     }
 
     /**
