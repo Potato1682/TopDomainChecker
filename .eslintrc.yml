@@ -69,7 +69,6 @@ rules:
     constructor-super: error
     curly:
         - error
-        - multi
     default-case: error
     default-case-last: error
     default-param-last:
