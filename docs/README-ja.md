@@ -1,10 +1,9 @@
-TopDomainChecker
-================
+# TopDomainChecker
 
 並列でトップレベルドメインを総当たりします。  
-サーバー生存確認にはICMPエコーを用いていますが、プロトコルの追加を検討しています。
+サーバー生存確認には ICMP エコーを用いていますが、プロトコルの追加を検討しています。
 
 ## トップレベルドメインの種類
 
-トップレベルドメインは、[IANA](https://data.iana.org/TLD/tlds-alpha-by-domain.txt) が提供しているTLDリストを使用しています。  
+トップレベルドメインは、[IANA](https://data.iana.org/TLD/tlds-alpha-by-domain.txt) が提供している TLD リストを使用しています。  
 追加のトップレベルドメインを総当たりするには **-t** を使用してください。

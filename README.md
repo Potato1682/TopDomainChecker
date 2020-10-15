@@ -4,7 +4,7 @@
 
 ---
 
-<p align="center">This plugin document supported multi language.</p>
+<p align="center">This document supported multi language.</p>
 
 <p align="center">
     <a href="https://github.com/P2P-Develop/TopDomainChecker/blob/master/docs/README-en.md"

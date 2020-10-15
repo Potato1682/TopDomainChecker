@@ -1,5 +1,4 @@
-TopDomainChecker English Documentation
-======================================
+# TopDomainChecker English Documentation
 
 Brute-force top-level domains with parallel.  
 Makes the most of the thread pool and brute force the top-level domain with multiple jobs.  
