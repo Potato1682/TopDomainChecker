@@ -55,8 +55,6 @@
         "eslint-plugin-node": "^11.1.0",
         "eslint-plugin-unicorn": "^22.0.0",
         "eslint-plugin-yaml": "^0.3.0",
-        "nexe": "^4.0.0-beta.14",
-        "prettier": "^2.1.2",
         "remark-cli": "^8.0.1",
         "remark-lint": "^7.0.1",
         "remark-lint-heading-whitespace": "^1.0.0",
