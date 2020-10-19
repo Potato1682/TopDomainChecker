@@ -7,7 +7,8 @@ extends:
     - plugin:import/errors
     - plugin:import/warnings
     - plugin:json/recommended
-    - plugin:node/recommended
+    - plugin:@typescript-eslint/eslint-recommended
+    - plugin:@typescript-eslint/recommended
     - plugin:yaml/recommended
 plugins:
     - import
@@ -15,10 +16,19 @@ plugins:
     - node
     - unicorn
     - yaml
-parser: "@babel/eslint-parser"
+parser: "@typescript-eslint/parser"
 parserOptions:
     sourceType: module
-    ecmaVersion: 2020
+    project: ./tsconfig.json
+settings:
+    import/resolver:
+        node:
+            extensions:
+                - .js
+                - .jsx
+                - .json
+                - .ts
+                - .tsx
 rules:
     indent:
         - error
@@ -143,15 +153,6 @@ rules:
     json/*:
         - error
         - allowComments: true
-    node/exports-style: error
-    node/no-deprecated-api: error
-    node/no-missing-import: error
-    node/no-missing-require: error
-    node/no-unpublished-bin: error
-    node/no-unpublished-import: error
-    node/no-unpublished-require: error
-    node/process-exit-as-throw: error
-    node/shebang: error
     unicorn/better-regex: error
     unicorn/catch-error-name: error
     unicorn/consistent-function-scoping: error
