@@ -1,4 +1,4 @@
-import https, { request } from "https";
+import https from "https";
 import readline from "readline";
 import Enquirer from "enquirer";
 import getStdin from "get-stdin";
