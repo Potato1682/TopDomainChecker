@@ -1,18 +1,18 @@
-import https from "https";
-import readline from "readline";
-import Enquirer from "enquirer";
-import getStdin from "get-stdin";
-import boxen, { BorderStyle } from "boxen";
-import chalk from "chalk";
-import cliCursor from "cli-cursor";
-import ncp from "copy-paste";
-import commandLineArgs from "command-line-args";
-import commandLineUsage from "command-line-usage";
-import figures from "figures";
-import ora from "ora";
-import prettyError from "pretty-error";
-import terminalLink from "terminal-link";
-import TLDCheck from "./api";
+import https from "https"
+import readline from "readline"
+import Enquirer from "enquirer"
+import getStdin from "get-stdin"
+import boxen, { BorderStyle } from "boxen"
+import chalk from "chalk"
+import cliCursor from "cli-cursor"
+import ncp from "copy-paste"
+import commandLineArgs from "command-line-args"
+import commandLineUsage from "command-line-usage"
+import figures from "figures"
+import ora from "ora"
+import prettyError from "pretty-error"
+import terminalLink from "terminal-link"
+import TLDCheck from "./api"
 
 prettyError.start();
 cliCursor.hide();
@@ -147,9 +147,10 @@ if (arguments_.help) {
 if (!arguments_["dry-run"] && arguments_.quiet && arguments_.verbose) {
     // quiet and verbose cannot be used at the same time without --dry-run
     console.warn(`${chalk.yellowBright.inverse.bold(`  ${figures.warning}  `)} ${chalk.bold("--quiet")} and ${chalk.bold("--verbose")} cannot be used at same time! Replaced with default value!`);
-    arguments_.quiet = false;
-    arguments_.verbose = false;
+    [ arguments_.quiet, arguments_.verbose ] = [ false, false ];
 }
+
+const addTld = [ "co.jp", "or,jp", "ne.jp", "ac.jp", "ad.jp", "ed.jp", "go.jp", "gr.jp", "lg.jp" ];
 
 const requestGet = () => {
     let lockFlag = false;
@@ -204,8 +205,6 @@ const requestGet = () => {
 
 // Ping -> OK domains
 const aliveDomain: string[] = [];
-
-const addTld = [ "co.jp", "or,jp", "ne.jp", "ac.jp", "ad.jp", "ed.jp", "go.jp", "gr.jp", "lg.jp" ];
 
 // Check stdin (no input -> empty)
 let stdin = "";
@@ -347,4 +346,4 @@ const main = (tlds: string[]) => {
             process.stdout.write(aliveDomain.join("\n"));
         }
     });
-};
+}
