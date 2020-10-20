@@ -4,7 +4,7 @@ import Enquirer from "enquirer"
 import getStdin from "get-stdin"
 import boxen, { BorderStyle } from "boxen"
 import chalk from "chalk"
-import cliCursor from "cli-cursor"
+import * as cliCursor from "cli-cursor"
 import ncp from "copy-paste"
 import commandLineArgs from "command-line-args"
 import commandLineUsage from "command-line-usage"
@@ -204,7 +204,7 @@ const requestGet = () => {
 };
 
 // Ping -> OK domains
-const aliveDomain: string[] = [];
+const aliveDomain = [""];
 
 // Check stdin (no input -> empty)
 let stdin = "";
