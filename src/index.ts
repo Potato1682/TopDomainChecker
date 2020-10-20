@@ -103,7 +103,7 @@ const usage = commandLineUsage([
 ]);
 
 // Arguments cast interface
-type Arguments = {
+type arguments = {
     version: boolean,
     verbose: boolean,
     domain: string[],
@@ -130,7 +130,7 @@ const arguments_ = commandLineArgs([
     { name: "no-box", alias: "Q", type: Boolean, defaultValue: false },
     { name: "add-tld", alias: "t", type: String, defaultValue: [""], multiple: true },
     { name: "dry-run", alias: "D", type: Boolean, defaultValue: false }
-]) as Arguments;
+]) as arguments;
 
 if (arguments_.version) {
     console.log("v3.1.1");
