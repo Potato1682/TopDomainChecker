@@ -16,94 +16,106 @@ import TLDCheck from "./api";
 
 prettyError.start();
 cliCursor.hide();
-
 // Command usages and arguments
-const usage = commandLineUsage([
-    {
-        header: "TopDomainChecker",
-        content: "Brute-force the top-level domain with {italic parallel}."
-    },
-    {
-        header: "Main Values",
-        content: [
-            {
-                name: "{bold [stdin]}",
-                summary:
+const usage_ = commandLineUsage([
+        {
+            header: "TopDomainChecker",
+            content: "Brute-force the top-level domain with {italic parallel}."
+        },
+        {
+            header: "Main Values",
+            content: [
+                {
+                    name: "{bold [stdin]}",
+                    summary:
                     "Get the domain to search from the standard input. \n If the standard input does not find anything, you will be prompted with \n an argument or interactively."
-            }
-        ]
-    },
-    {
-        header: "Misc Options",
-        optionList: [
-            {
-                name: "version",
-                alias: "V",
-                description: "Show checker version.",
-                type: Boolean,
-                defaultValue: false
-            },
-            {
-                name: "verbose",
-                alias: "v",
-                description: "Enable verbose logging.",
-                type: Boolean,
-                defaultValue: false
-            },
-            {
-                name: "help",
-                alias: "h",
-                description: "Print this usage guide.",
-                type: Boolean,
-                defaultValue: false
-            },
-            {
-                name: "dry-run",
-                alias: "D",
-                description: "Show how many domains to check.",
-                type: Boolean,
-                defaultValue: false
-            },
-            {
-                name: "quiet",
-                alias: "q",
-                description:
+                }
+            ]
+        },
+        {
+            header: "Misc Options",
+            optionList: [
+                {
+                    name: "version",
+                    alias: "V",
+                    description: "Show checker version.",
+                    type: Boolean,
+                    defaultValue: false
+                },
+                {
+                    name: "verbose",
+                    alias: "v",
+                    description: "Enable verbose logging.",
+                    type: Boolean,
+                    defaultValue: false
+                },
+                {
+                    name: "help",
+                    alias: "h",
+                    description: "Print this usage guide.",
+                    type: Boolean,
+                    defaultValue: false
+                },
+                {
+                    name: "dry-run",
+                    alias: "D",
+                    description: "Show how many domains to check.",
+                    type: Boolean,
+                    defaultValue: false
+                },
+                {
+                    name: "quiet",
+                    alias: "q",
+                    description:
                     "No ping notification is output, only the result is output.",
-                type: Boolean,
-                defaultValue: false
-            },
-            {
-                name: "no-box",
-                alias: "Q",
-                description:
+                    type: Boolean,
+                    defaultValue: false
+                },
+                {
+                    name: "no-box",
+                    alias: "Q",
+                    description:
                     "Checker don't use boxes to display results. Only successful domains and line breaks are displayed. \n Use this with {bold --quiet}, it can be easily integrated with other programs.",
-                type: Boolean,
-                defaultValue: false
-            },
-            {
-                name: "add-tld",
-                alias: "t",
-                description:
+                    type: Boolean,
+                    defaultValue: false
+                },
+                {
+                    name: "add-tld",
+                    alias: "t",
+                    description:
                     "Enter additional top-level domains separated by spaces. If you use only the flag, show interactive prompt."
-            },
-            {
-                name: "domain",
-                alias: "d",
-                description:
+                },
+                {
+                    name: "domain",
+                    alias: "d",
+                    description:
                     "{underline TopDomainChecker prioritizes arguments over standard inputs}. \n If it missing, show the interactive prompt. \n Also, {bold --domain} is specified as the default argument and is not required."
-            }
-        ]
-    },
-    {
-        content: `Project home: ${terminalLink(
-            "GitHub",
-            "https://github.com/P2P-Develop/TopDomainChecker"
-        )}`
-    }
-]);
-
-// Arguments cast interface
-type Arguments = {
+                }
+            ]
+        },
+        {
+            content: `Project home: ${terminalLink(
+                "GitHub",
+                "https://github.com/P2P-Develop/TopDomainChecker"
+            )}`
+        }
+    ]), arguments_ = commandLineArgs([
+        {name: "version", alias: "V", type: Boolean, defaultValue: false},
+        {name: "verbose", alias: "v", type: Boolean, defaultValue: false},
+        {
+            name: "domain",
+            alias: "d",
+            type: String,
+            multiple: true,
+            defaultOption: true,
+            defaultValue: [""]
+        },
+        {name: "help", alias: "h", type: Boolean, defaultValue: false},
+        {name: "quiet", alias: "q", type: Boolean, defaultValue: false},
+        {name: "no-box", alias: "Q", type: Boolean, defaultValue: false},
+        {name: "add-tld", alias: "t", type: String, defaultValue: [""], multiple: true},
+        {name: "dry-run", alias: "D", type: Boolean, defaultValue: false}
+    ]) as {
     version: boolean,
     verbose: boolean,
     domain: string[],
@@ -112,25 +124,7 @@ type Arguments = {
     "no-box": boolean,
     "add-tld": string[],
     "dry-run": boolean
-}
-
-const arguments_ = commandLineArgs([
-    { name: "version", alias: "V", type: Boolean, defaultValue: false },
-    { name: "verbose", alias: "v", type: Boolean, defaultValue: false },
-    {
-        name: "domain",
-        alias: "d",
-        type: String,
-        multiple: true,
-        defaultOption: true,
-        defaultValue: [""]
-    },
-    { name: "help", alias: "h", type: Boolean, defaultValue: false },
-    { name: "quiet", alias: "q", type: Boolean, defaultValue: false },
-    { name: "no-box", alias: "Q", type: Boolean, defaultValue: false },
-    { name: "add-tld", alias: "t", type: String, defaultValue: [""], multiple: true },
-    { name: "dry-run", alias: "D", type: Boolean, defaultValue: false }
-]) as Arguments;
+};
 
 if (arguments_.version) {
     console.log("v3.1.1");
@@ -140,7 +134,7 @@ if (arguments_.version) {
 
 if (arguments_.help) {
     // Show usages if has argument "--help"
-    console.log(usage);
+    console.log(usage_);
     process.exit(0);
 }
 
@@ -187,13 +181,11 @@ const requestGet = () => {
             console.error(error);
             console.log(`${chalk.redBright(figures.pointer)} ${chalk.bold("Please report this issue to")} ${terminalLink("Github Issues", "https://github.com/P2P-Develop/TopDomainChecker/issues")}`);
 
-            let copyAnswer = { cp: false };
-
-            copyAnswer = await Enquirer.prompt({
+            const copyAnswer = await Enquirer.prompt({
                 type: "confirm",
                 name: "cp",
                 message: "Copy stack-trace to clip board?"
-            });
+            }) as { cp: boolean };
 
             if (copyAnswer.cp) {
                 ncp.copy(error);
@@ -224,13 +216,11 @@ if (stdin !== "") {
 
         cliCursor.show();
 
-        let domainAnswer = { domains: [""] };
-
-        domainAnswer = await Enquirer.prompt({
+        const domainAnswer = await Enquirer.prompt({
             type: "list",
             name: "domains",
             message: "Which domain names do you want to check (comma-separated)"
-        });
+        }) as { domains: string[] };
 
         arguments_.domain = [...domainAnswer.domains];
     }
@@ -238,13 +228,11 @@ if (stdin !== "") {
     if (arguments_["add-tld"] === null) {
         cliCursor.show();
 
-        let tldAnswer = { tlds: [""] };
-
-        tldAnswer = await Enquirer.prompt({
+        const tldAnswer = await Enquirer.prompt({
             type: "list",
             name: "tlds",
             message: "Which top-level domains do you want to check (comma-separated)"
-        });
+        }) as { tlds: string[] };
 
         addTld.push(...tldAnswer.tlds);
     }
