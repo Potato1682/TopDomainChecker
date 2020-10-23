@@ -7,7 +7,7 @@
         "build": "tsc -p .",
         "lint": "npm-run-all -p lint:*",
         "lint:js": "eslint .",
-        "lint:md": "remark -r ./.remarkrc .",
+        "lint:md": "remark -r ./.remarkrc.yml .",
         "fix": "eslint --fix ."
     },
     "bin": {

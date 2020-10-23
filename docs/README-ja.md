@@ -54,7 +54,7 @@ Promiseをうまく活用し複数の処理を一度に行っています。
 3. npmスクリプト `start` を実行します。
 
    ```bash
-   $ npm start -- -[vVhqD] [-t <Additional TLDs...>] [-d] <Domains...>
+   $ npx ts-node src/index.ts -[vVhqD] [-t <Additional top-level domains...>] [-d] <Domains...>
    ```
 
 <!--
@@ -68,7 +68,7 @@ $ npm i -g tldcheck
 ## 使い方
 
 ```sh
-$ tldcheck -[vVhqD] [-t <Additional TLDs...>] [-d] <Domains...>
+$ tldcheck -[vVhqD] [-t <Additional top-level domains...>] [-d] <Domains...>
 ```
 
 <!--

@@ -1,5 +1,11 @@
+#!/bin/sh
+/*/sh --version > /dev/null 2>&1
+exec npx ts-node "$0" "$@"
+*/
+
 import https from "https";
 import readline from "readline";
+import path from "path";
 import boxen, { BorderStyle } from "boxen";
 import chalk from "chalk";
 import cliCursor from "cli-cursor";
@@ -23,6 +29,10 @@ const usage_ = commandLineUsage([
         {
             header: "TopDomainChecker",
             content: "Brute-force the top-level domain with {italic parallel}."
+        },
+        {
+            header: "Usage",
+            content: `$ ${path.basename(__filename)} -[vVhqD] [-t <Additional top-level domains...>] [-d] <Domains...>`
         },
         {
             header: "Main Values",

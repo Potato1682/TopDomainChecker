@@ -15,7 +15,7 @@
   </a>
 </p>
 
-> Brute-force the top-level domains with parallel.
+> Brute-force the top-level domains with *parallel*.
 
 日本語は[こちら](docs/README-ja.md)。
 
@@ -57,7 +57,7 @@ The top-level domains are getting the latest list from [IANA](https://data.iana.
 3. Run the npm script `start`.
 
    ```bash
-   $ npm start -- -[vVhqD] [-t <Additional TLDs...>] [-d] <Domains...>
+   $ npx ts-node src/index.ts -[vVhqD] [-t <Additional top-level domains...>] [-d] <Domains...>
    ```
 
 <!--
@@ -71,7 +71,7 @@ $ npm i -g tldcheck
 ## Usage
 
 ```sh
-$ tldcheck -[vVhqD] [-t <Additional TLDs...>] [-d] <Domains...>
+$ tldcheck -[vVhqD] [-t <Additional top-level domains...>] [-d] <Domains...>
 ```
 
 <!--
