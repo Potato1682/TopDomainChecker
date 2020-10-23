@@ -1,21 +1,23 @@
 import https from "https";
 import readline from "readline";
-import Enquirer from "enquirer";
-import getStdin from "get-stdin";
 import boxen, { BorderStyle } from "boxen";
 import chalk from "chalk";
 import cliCursor from "cli-cursor";
-import ncp from "copy-paste";
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
+import ncp from "copy-paste";
+import Enquirer from "enquirer";
 import figures from "figures";
+import getStdin from "get-stdin";
 import ora from "ora";
 import prettyError from "pretty-error";
 import terminalLink from "terminal-link";
+
 import TLDCheck from "./api";
 
 prettyError.start();
 cliCursor.hide();
+
 // Command usages and arguments
 const usage_ = commandLineUsage([
         {
@@ -147,14 +149,13 @@ if (!arguments_["dry-run"] && arguments_.quiet && arguments_.verbose) {
 
 const requestGet = () => {
     let lockFlag = false;
-
     const spinner = arguments_.verbose ? ora("Fetching top-level domains information from IANA...") : undefined;
 
     if (spinner) {
         spinner.start();
     }
 
-    https.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt", (response) => {
+    https.get("https://data.iana.org/TLD/topLevelDomains-alpha-by-domain.txt", (response) => {
         response.on("data", (chunk) => {
             if (!lockFlag) {
                 if (spinner) {
@@ -165,7 +166,7 @@ const requestGet = () => {
                     ...(`${chunk}`
                         .toLowerCase()
                         .split(/\r\n|\n|\r/)
-                        .filter(tld => !tld.startsWith("#") || !tld)),
+                        .filter(tld => !tld.startsWith("#") || tld.length < 3)),
                     ...addTld
                 ]);
             } else {
@@ -213,7 +214,6 @@ if (stdin !== "") {
 (async () => {
     // If also not, show cursor and interactive prompt
     if (!("" in arguments_.domain)) {
-
         cliCursor.show();
 
         const domainAnswer = await Enquirer.prompt({
@@ -230,35 +230,36 @@ if (stdin !== "") {
 
         const tldAnswer = await Enquirer.prompt({
             type: "list",
-            name: "tlds",
+            name: "topLevelDomains",
             message: "Which top-level domains do you want to check (comma-separated)"
-        }) as { tlds: string[] };
+        }) as { topLevelDomains: string[] };
 
-        addTld.push(...tldAnswer.tlds);
+        addTld.push(...tldAnswer.topLevelDomains);
     }
 
-    requestGet();
-
+    if (!arguments_.quiet) {
+        requestGet();
+    }
 })();
 
-const main = (tlds: string[]) => {
+const main = (topLevelDomains: string[]) => {
     cliCursor.hide();
 
     const order: string[] = [];
 
     if (arguments_["dry-run"]) {
-        arguments_.domain.forEach((d: string) => tlds.map(tld => `${d}.${tld}`).forEach(uri => order.push(uri)));
+        order.push(...TLDCheck.createOrder(arguments_.domain, addTld));
 
         if (arguments_.quiet) {
             console.log(arguments_.verbose
-                ? `${tlds.length} * ${arguments_.domain.length}`
+                ? `${topLevelDomains.length} * ${arguments_.domain.length}`
                 : `${order.length}`);
 
             process.exit(0);
         }
 
         console.log(arguments_.verbose
-            ? `${chalk.bold.blue(figures.info)} Checker will be check the operating status of ${chalk.blueBright(tlds.length)} top-level domains in ${chalk.blueBright(arguments_.domain.length)} domain name${arguments_.domain.length > 1 ? "s" : ""}`
+            ? `${chalk.bold.blue(figures.info)} Checker will be check the operating status of ${chalk.blueBright(topLevelDomains.length)} top-level domains in ${chalk.blueBright(arguments_.domain.length)} domain name${arguments_.domain.length > 1 ? "s" : ""}`
             : `${chalk.bold.blue(figures.info)} Checker will be check the operating status of ${chalk.blueBright(order.length)} domain${order.length > 1 ? "s" : ""}`);
 
         process.exit(0);
@@ -269,7 +270,7 @@ const main = (tlds: string[]) => {
         let tldCount = 0;
 
         arguments_.domain.forEach((d: string) => {
-            tlds.map(tld => `${d}.${tld}`).forEach((uri) => {
+            topLevelDomains.map(tld => `${d}.${tld}`).forEach((uri) => {
                 order.push(uri);
                 process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} Adding ${chalk.blueBright(++tldCount)} top-level domains to ${chalk.blueBright(domainCount)} domain names`);
                 readline.moveCursor(process.stdout, 0, -1);
@@ -285,7 +286,7 @@ const main = (tlds: string[]) => {
     } else if (!arguments_.quiet) {
         let count = 0;
 
-        arguments_.domain.forEach((d: string) => tlds.map(tld => `${d}.${tld}`).forEach((uri) => {
+        arguments_.domain.forEach((d: string) => topLevelDomains.map(tld => `${d}.${tld}`).forEach((uri) => {
             order.push(uri);
             process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} Adding ${chalk.bold.blueBright(++count)} domains`);
             readline.moveCursor(process.stdout, 0, -1);
@@ -293,7 +294,7 @@ const main = (tlds: string[]) => {
 
         console.log("\n\n");
     } else {
-        arguments_.domain.forEach((d: string) => tlds.map(tld => `${d}.${tld}`).forEach(uri => order.push(uri)));
+        order.push(...TLDCheck.createOrder(arguments_.domain, addTld));
     }
 
     Promise.all(order.map(async (domain) => {

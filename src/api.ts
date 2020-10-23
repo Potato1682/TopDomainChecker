@@ -1,8 +1,8 @@
 import https from "https";
-import {promise} from "ping";
+import { promise } from "ping";
 
 /**
- * TopDomainChecker API.
+ * The TopDomainChecker API.
  */
 export default class TLDCheck {
     /**
@@ -21,8 +21,8 @@ export default class TLDCheck {
     /**
      * Create order the domain and tld.
      *
-     * @param domain  Domain name without TLD
-     * @param additionalTLD Additional TLDs
+     * @param domain  Domain name without the top-level domain
+     * @param additionalTLD Additional top-level domains
      * @returns Ordered domains
      */
     static createOrder(

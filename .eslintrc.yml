@@ -2,6 +2,7 @@
 env:
     es6: true
     node: true
+
 extends:
     - eslint:recommended
     - plugin:import/errors
@@ -10,16 +11,20 @@ extends:
     - plugin:@typescript-eslint/eslint-recommended
     - plugin:@typescript-eslint/recommended
     - plugin:yaml/recommended
+
 plugins:
     - import
     - json
     - node
     - unicorn
     - yaml
+
 parser: "@typescript-eslint/parser"
+
 parserOptions:
     sourceType: module
     project: ./tsconfig.json
+
 settings:
     import/resolver:
         node:
@@ -29,87 +34,116 @@ settings:
                 - .json
                 - .ts
                 - .tsx
+
 rules:
     indent:
         - error
         - 4
+
     quotes:
         - error
         - double
+
     semi:
         - error
+
     array-bracket-spacing:
         - error
         - always
         - singleValue: false
           arraysInArrays: false
           objectsInArrays: false
+
     array-bracket-newline:
         - error
         - consistent
+
     array-element-newline:
         - error
         - consistent
+
     arrow-body-style:
         - error
         - as-needed
+
     arrow-parens:
         - error
         - as-needed
         - requireForBlockBody: true
+
     block-spacing: error
+
     brace-style:
         - error
         - 1tbs
         - allowSingleLine: true
+
     comma-dangle:
         - error
         - never
+
     comma-spacing:
         - error
         - before: false
           after: true
+
     comma-style:
         - error
         - last
+
     computed-property-spacing:
         - error
         - never
         - enforceForClassMembers: true
+
     constructor-super: error
+
     curly:
         - error
+
     default-case: error
     default-case-last: error
+
     default-param-last:
         - error
+
     dot-notation:
         - error
         - allowKeywords: false
+
     eol-last:
         - error
         - always
+
     for-direction: error
+
     func-call-spacing:
         - error
         - never
+
     func-style:
         - error
         - expression
+
     function-paren-newline:
         - error
         - multiline
+
     implicit-arrow-linebreak:
         - error
         - beside
+
     key-spacing:
         - error
         - mode: strict
+
     no-confusing-arrow:
         - error
         - allowParens: true
+
     no-process-exit: 0
     operator-linebreak: error
+
     padding-line-between-statements:
         - error
         - blankLine: always
@@ -141,18 +175,24 @@ rules:
               - case
               - default
           next: "*"
+
     prefer-arrow-callback:
         - error
         - allowNamedFunctions: true
+
     require-await: error
     require-yield: error
+
     rest-spread-spacing:
         - error
         - never
+
     import/order: error
+
     json/*:
         - error
         - allowComments: true
+
     unicorn/better-regex: error
     unicorn/catch-error-name: error
     unicorn/consistent-function-scoping: error
