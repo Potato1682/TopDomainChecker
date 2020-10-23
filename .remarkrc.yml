@@ -1,0 +1,12 @@
+---
+    presets:
+        - preset-recommended
+        - lint-consistent
+    plugins:
+        - lint:
+            list-item-indent: space
+        - lint-heading-whitespace
+        - lint-match-punctuation
+        - lint-no-dead-urls
+        - lint-no-empty-sections
+        - lint-no-url-trailing-slash
