@@ -12,6 +12,7 @@ export default class TLDCheck {
 
     /**
      * Constructor.
+     * We recommend using static methods.
      *
      * @param protocol Checking protocol.
      */
