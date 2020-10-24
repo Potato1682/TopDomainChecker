@@ -22,7 +22,7 @@
 ## Description
 
 自動化された並列処理を使用してトップレベルドメインを総当たりします。  
-Promiseをうまく活用し複数の処理を一度に行っています。  
+Promise をうまく活用し複数の処理を一度に行っています。  
 サーバー生存確認には ICMP エコーを用いています。  
 トップレベルドメインの一覧の取得には[IANA](https://data.iana.org/TLD/tlds-alpha-by-domain.txt)から最新の情報を入手しています。
 
@@ -31,16 +31,19 @@ Promiseをうまく活用し複数の処理を一度に行っています。
 1. このプロジェクトをクローンします。
 
    HTTPS:
+
    ```bash
    $ git clone https://github.com/P2P-Develop/TopDomainChecker
    ```
 
    SSH:
+
    ```bash
    $ git clone git@github.com:P2P-Develop/TopDomainChecker
    ```
 
    [Github CLI](https://github.com/cli/cli):
+
    ```bash
    $ gh repo clone P2P-Develop/TopDomainChecker
    ```
@@ -51,7 +54,7 @@ Promiseをうまく活用し複数の処理を一度に行っています。
    $ npm i
    ```
 
-3. npmスクリプト `start` を実行します。
+3. npm スクリプト `start` を実行します。
 
    ```bash
    $ npx ts-node src/index.ts -[vVhqD] [-t <Additional top-level domains...>] [-d] <Domains...>
@@ -87,7 +90,7 @@ $ npm test
 
 ## あなたのサポートを明示
 
-もしこのプロジェクトがあなたをお助けできた場合は⭐️を是非お願いします！
+もしこのプロジェクトがあなたをお助けできた場合は ⭐️ を是非お願いします！
 
 ## 📝 ライセンス
 

@@ -140,7 +140,6 @@ const usage_ = commandLineUsage([
 
 if (arguments_.version) {
     console.log("v3.1.1");
-    console.log(arguments_);
     process.exit(0);
 }
 
@@ -161,11 +160,11 @@ const requestGet = () => {
     let lockFlag = false;
     const spinner = arguments_.verbose ? ora("Fetching top-level domains information from IANA...") : undefined;
 
-    if (spinner) {
+    if (typeof(spinner) !== "undefined") {
         spinner.start();
     }
 
-    https.get("https://data.iana.org/TLD/topLevelDomains-alpha-by-domain.txt", (response) => {
+    https.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt", (response) => {
         response.on("data", (chunk) => {
             if (!lockFlag) {
                 if (spinner) {
@@ -252,13 +251,15 @@ if (stdin !== "") {
     }
 })();
 
-const main = (topLevelDomains: string[]) => {
+const main = async (topLevelDomains: string[]) => {
     cliCursor.hide();
 
     const order: string[] = [];
 
     if (arguments_["dry-run"]) {
-        order.push(...TLDCheck.createOrder(arguments_.domain, addTld));
+        const tld = await TLDCheck.createOrder(arguments_.domain, addTld);
+
+        order.push(...tld);
 
         if (arguments_.quiet) {
             console.log(arguments_.verbose
@@ -304,7 +305,9 @@ const main = (topLevelDomains: string[]) => {
 
         console.log("\n\n");
     } else {
-        order.push(...TLDCheck.createOrder(arguments_.domain, addTld));
+        const tld = await TLDCheck.createOrder(arguments_.domain, addTld);
+
+        order.push(...tld);
     }
 
     Promise.all(order.map(async (domain) => {

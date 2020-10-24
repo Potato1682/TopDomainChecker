@@ -8,7 +8,8 @@
         "lint": "npm-run-all -p lint:*",
         "lint:js": "eslint .",
         "lint:md": "remark -r ./.remarkrc.yml .",
-        "fix": "eslint --fix ."
+        "fix": "eslint --fix .",
+        "test": "jest"
     },
     "bin": {
         "tldcheck": "src/index.js"
@@ -22,14 +23,25 @@
     "bugs": {
         "url": "https://github.com/P2P-Develop/TopDomainChecker/issues"
     },
+    "jest": {
+        "moduleFileExtensions": [
+            "ts",
+            "js"
+        ],
+        "transform": {
+            "^.+\\.ts$": "ts-jest"
+        },
+        "globals": {
+            "ts-jest": {
+                "tsConfig": "tsconfig.json"
+            }
+        },
+        "testMatch": [
+            "**/test/**/*.test.ts"
+        ]
+    },
     "homepage": "https://github.com/P2P-Develop/TopDomainChecker#readme",
     "dependencies": {
-        "@types/command-line-args": "^5.0.0",
-        "@types/command-line-usage": "^5.0.1",
-        "@types/copy-paste": "^1.1.30",
-        "@types/ncp": "^2.0.4",
-        "@types/node": "^14.11.10",
-        "@types/ping": "^0.2.0",
         "boxen": "^4.2.0",
         "chalk": "^4.1.0",
         "cli-cursor": "^3.1.0",
@@ -39,6 +51,7 @@
         "enquirer": "^2.3.6",
         "figures": "^3.2.0",
         "get-stdin": "^8.0.0",
+        "got": "^11.8.0",
         "https": "^1.0.0",
         "ora": "^5.1.0",
         "ping": "^0.2.3",
@@ -47,6 +60,12 @@
         "terminal-link": "^2.1.1"
     },
     "devDependencies": {
+        "@types/command-line-args": "^5.0.0",
+        "@types/command-line-usage": "^5.0.1",
+        "@types/copy-paste": "^1.1.30",
+        "@types/jest": "^26.0.15",
+        "@types/node": "^14.14.2",
+        "@types/ping": "^0.2.0",
         "@typescript-eslint/eslint-plugin": "^4.4.1",
         "@typescript-eslint/parser": "^4.4.1",
         "eslint": "^7.10.0",
@@ -55,6 +74,7 @@
         "eslint-plugin-node": "^11.1.0",
         "eslint-plugin-unicorn": "^22.0.0",
         "eslint-plugin-yaml": "^0.3.0",
+        "jest": "^26.6.1",
         "npm-run-all": "^4.1.5",
         "remark-cli": "^8.0.1",
         "remark-lint": "^7.0.1",
@@ -64,6 +84,7 @@
         "remark-lint-no-empty-sections": "^4.0.0",
         "remark-lint-no-url-trailing-slash": "^3.0.1",
         "remark-preset-lint-recommended": "^4.0.1",
+        "ts-jest": "^26.4.1",
         "ts-node": "^9.0.0",
         "typescript": "^4.0.3"
     }

@@ -1,5 +1,5 @@
-import https from "https";
 import { promise } from "ping";
+import got from "got";
 
 /**
  * The TopDomainChecker API.
@@ -12,53 +12,70 @@ export default class TLDCheck {
      * @param domain The domain
      * @returns Pinging promise
      */
-    static async check(domain: string): Promise<boolean> {
-        const response = await promise.probe(domain);
+    static async check(domain: string, protocol: "ping" | "http" | "https" = "ping"): Promise<boolean> {
+        switch (protocol) {
+        case "ping":
+            return (await promise.probe(domain)).alive;
 
-        return response.alive;
+        case "http":
+            try {
+                await got(`http://${domain}`);
+
+                return true;
+            } catch (error) {
+                return Promise.reject(error);
+            }
+
+        case "https":
+            try {
+                await got(`https://${domain}`);
+
+                return true;
+            } catch (error) {
+                return Promise.reject(error);
+            }
+
+        default:
+            return Promise.reject(new Error("Invalid arguments"));
+        }
     }
 
     /**
      * Create order the domain and tld.
+     * This requires await.
      *
      * @param domain  Domain name without the top-level domain
      * @param additionalTLD Additional top-level domains
-     * @returns Ordered domains
+     * @returns Ordered domains promise
      */
-    static createOrder(
+    static async createOrder(
         domain: string[],
         additionalTLD: string[] = [""]
-    ): string[] {
+    ): Promise<string[]> {
+        if (domain.join("").trim().length === 0) {
+            return [];
+        }
+
+        if (domain.some(value => value.startsWith(".") || value.startsWith(" ")) ||
+            additionalTLD.some(value => value.startsWith(".") || value.startsWith(" "))) {
+            return Promise.reject(new Error(`Invalid domain${domain.length > 1 ? "s" : ""}${additionalTLD.join("") !== "" ? ` and top-level domain${additionalTLD.length > 1 ? "s" : ""}` : ""} value.`));
+        }
+
         const order: string[] = [];
-        let TLD: string[] = [];
+        let topLevelDomains: string[] = [];
 
-        let lockFlag = false;
+        const response = await got("https://data.iana.org/TLD/tlds-alpha-by-domain.txt");
 
-        https
-            .get(
-                "https://data.iana.org/TLD/tlds-alpha-by-domain.txt",
-                (response) => {
-                    response.on("data", (chunk) => {
-                        if (!lockFlag) {
-                            TLD = [
-                                ...`${chunk}`
-                                    .toLowerCase()
-                                    .split(/\r\n|\n/)
-                                    .filter(tld => !tld.startsWith("#") || !tld),
-                                ...additionalTLD
-                            ];
-                        } else {
-                            lockFlag = true;
-                        }
-                    });
-                }
-            )
-            .on("error", (error) => {
-                throw error;
-            });
+        topLevelDomains = [
+            ...(response.body
+                .toLowerCase()
+                .split(/\r\n|\n/)
+                .filter(tld => !tld.startsWith("#") || !tld)),
+            ...additionalTLD
+        ];
 
-        domain.forEach(d => TLD.map(t => `${d}.${t}`).forEach(uri => order.push(uri)));
+        domain.forEach(d => topLevelDomains.map(t => `${d}.${t}`).forEach(uri => order.push(uri)));
 
-        return order;
+        return [...new Set(order)];
     }
 }

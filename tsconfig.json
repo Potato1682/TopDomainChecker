@@ -7,14 +7,13 @@
         "outDir": "./dist",
         "strict": true,
         "moduleResolution": "node",
-        "typeRoots": [
-            "./src/types"
-        ],
+        "typeRoots": ["./src/types"],
+        "types": ["@types/jest"],
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true
     },
-    "include": ["src/**/*"],
+    "include": ["src/**/*", "test/**/*"],
     "exclude": ["docs/**/*"]
 }

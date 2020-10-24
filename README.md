@@ -15,7 +15,7 @@
   </a>
 </p>
 
-> Brute-force the top-level domains with *parallel*.
+> Brute-force the top-level domains with _parallel_.
 
 日本語は[こちら](docs/README-ja.md)。
 
