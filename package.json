@@ -1,6 +1,6 @@
 {
     "name": "tld-checker",
-    "version": "4.0.0",
+    "version": "4.0.1",
     "description": "Brute-force the top-level domains with parallel.",
     "main": "dist/src",
     "scripts": {
