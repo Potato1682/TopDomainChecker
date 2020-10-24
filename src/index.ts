@@ -112,8 +112,8 @@ const usage_ = commandLineUsage([
             )}`
         }
     ]), arguments_ = commandLineArgs([
-        {name: "version", alias: "V", type: Boolean, defaultValue: false},
-        {name: "verbose", alias: "v", type: Boolean, defaultValue: false},
+        { name: "version", alias: "V", type: Boolean, defaultValue: false },
+        { name: "verbose", alias: "v", type: Boolean, defaultValue: false },
         {
             name: "domain",
             alias: "d",
@@ -122,11 +122,11 @@ const usage_ = commandLineUsage([
             defaultOption: true,
             defaultValue: [""]
         },
-        {name: "help", alias: "h", type: Boolean, defaultValue: false},
-        {name: "quiet", alias: "q", type: Boolean, defaultValue: false},
-        {name: "no-box", alias: "Q", type: Boolean, defaultValue: false},
-        {name: "add-tld", alias: "t", type: String, defaultValue: [""], multiple: true},
-        {name: "dry-run", alias: "D", type: Boolean, defaultValue: false}
+        { name: "help", alias: "h", type: Boolean, defaultValue: false },
+        { name: "quiet", alias: "q", type: Boolean, defaultValue: false },
+        { name: "no-box", alias: "Q", type: Boolean, defaultValue: false },
+        { name: "add-tld", alias: "t", type: String, defaultValue: [""], multiple: true },
+        { name: "dry-run", alias: "D", type: Boolean, defaultValue: false }
     ]) as {
     version: boolean,
     verbose: boolean,

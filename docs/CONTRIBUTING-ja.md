@@ -1,6 +1,6 @@
 # TopDomainChecker 貢献ガイド
 
-For contributors in English, click [here](CONTRIBUTING.md).
+For contributors in English, click [here](https://github.com/P2P-Develop/TopDomainChecker/blob/develop/docs/CONTRIBUTING.md).
 
 ## 概要
 

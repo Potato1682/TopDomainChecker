@@ -1,10 +1,10 @@
 <h1 align="center">TopDomainChecker</h1>
 
 <p align="center">
-  <a href="https://github.com/P2P-Develop/TopDomainChecker/blob/main/package.json" target="_blank">
+  <a href="https://github.com/P2P-Develop/TopDomainChecker/blob/develop/package.json" target="_blank">
     <img alt="Version" src="https://img.shields.io/github/package-json/v/P2P-Develop/TopDomainChecker?style=flat-square">
   </a>
-  <a href="https://github.com/P2P-Develop/tree/main/docs" target="_blank">
+  <a href="https://github.com/P2P-Develop/tree/develop/docs" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg?style=flat-square" />
   </a>
   <a href="https://github.com/P2P-Develop/TopDomainChecker/graphs/commit-activity" target="_blank">
@@ -17,7 +17,7 @@
 
 > 並列でトップレベルドメインを総当たりします。
 
-[Here](../README.md) is an English documentation.
+[Here](https://github.com/P2P-Develop/TopDomainChecker/blob/develop/README.md) is an English documentation.
 
 ## Description
 
@@ -86,7 +86,7 @@ $ npm test
 
 貢献や Issue、新機能のリクエストは大歓迎です！  
 [Issues](https://github.com/P2P-Develop/TopDomainChecker/issues) をチェックしても構いません。  
-[貢献ガイド](docs/CONTRIBUTING.md)も是非読んでください。
+[貢献ガイド](https://github.com/P2P-Develop/TopDomainChecker/blob/develop/docs/CONTRIBUTING.md)も是非読んでください。
 
 ## あなたのサポートを明示
 
@@ -95,4 +95,4 @@ $ npm test
 ## 📝 ライセンス
 
 © 2020 [P2P-Develop](https://github.com/P2P-Develop).  
-このプロジェクトは [MIT](../LICENSE) ライセンスに準拠しています。
+このプロジェクトは [MIT](https://github.com/P2P-Develop/TopDomainChecker/blob/develop/LICENSE) ライセンスに準拠しています。

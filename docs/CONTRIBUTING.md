@@ -1,6 +1,6 @@
 # TopDomainChecker contribution guide
 
-日本語の貢献ルールは[こちら](CONTRIBUTING-ja.md)。
+日本語の貢献ルールは[こちら](https://github.com/P2P-Develop/TopDomainChecker/blob/develop/docs/CONTRIBUTING-ja.md)。
 
 ## Overview
 
@@ -24,4 +24,4 @@ This project has established some rules to properly contribute as the contributo
 
 ### See also
 
-- [Code of Conduct](CODE-OF-CONDUCT.md)
+- [Code of Conduct](https://github.com/P2P-Develop/TopDomainChecker/blob/develop/docs/CODE-OF-CONDUCT.md)

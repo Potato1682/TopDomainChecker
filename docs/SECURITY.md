@@ -1,6 +1,6 @@
 # Security Policy
 
-日本語は[こちら](SECURITY-ja.md)から。
+日本語は[こちら](https://github.com/P2P-Develop/TopDomainChecker/blob/develop/docs/SECURITY-ja.md)から。
 
 ## Supported Versions
 

@@ -1,5 +1,7 @@
 # セキュリティーポリシー
 
+[Here](https://github.com/P2P-Develop/TopDomainChecker/blob/develop/docs/SECURITY.md) is a security policy in English.
+
 ## サポート済みバージョン
 
 GET リクエストは https を用いた SSL 暗号化通信を介しています。
