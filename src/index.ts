@@ -77,10 +77,15 @@ const usage_ = commandLineUsage([
                     defaultValue: false
                 },
                 {
+                    name: "protocol",
+                    "alias": "p",
+                    description: "The protocol used for checking. If you use only the flag, show interactive prompt."
+                },
+                {
                     name: "quiet",
                     alias: "q",
                     description:
-                    "No ping notification is output, only the result is output.",
+                    "No notification is output, only the result is output.",
                     type: Boolean,
                     defaultValue: false
                 },
