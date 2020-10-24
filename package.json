@@ -2,7 +2,7 @@
     "name": "tld-checker",
     "version": "4.0.0",
     "description": "Brute-force the top-level domains with parallel.",
-    "main": "src/index.ts",
+    "main": "dist/src",
     "scripts": {
         "build": "tsc -p .",
         "lint": "npm-run-all -p lint:*",
@@ -13,7 +13,7 @@
         "typedoc": "typedoc --out ./typedoc/ ./src/"
     },
     "bin": {
-        "tldcheck": "src/index.js"
+        "tldcheck": "dist/src/index.js"
     },
     "repository": {
         "type": "git",
