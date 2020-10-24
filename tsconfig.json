@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "commonjs",
+        "allowJs": true,
+        "sourceMap": true,
+        "outDir": "dist",
+        "strict": true,
+        "moduleResolution": "node",
+        "typeRoots": ["src/types"],
+        "types": ["@types/jest"],
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitAny": true,
+        "removeComments": false,
+        "preserveConstEnums": true,
+        "resolveJsonModule": true,
+        "jsx": "react",
+        "declaration": true,
+        "pretty": true,
+        "newLine": "lf",
+        "stripInternal": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "noEmitOnError": true
+    },
+    "include": ["src", "test"],
+    "exclude": ["docs/**/*", "node_modules"]
+}
