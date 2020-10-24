@@ -25,4 +25,4 @@ For contributors in English, click [here](https://github.com/P2P-Develop/TopDoma
 
 ### 参照
 
-- [行動規範](CODE-OF-CONDUCT-ja.md)
+- [行動規範](https://github.com/P2P-Develop/TopDomainChecker/blob/develop/docs/CODE-OF-CONDUCT-ja.md)

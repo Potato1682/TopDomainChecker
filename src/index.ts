@@ -21,6 +21,7 @@ import terminalLink from "terminal-link";
 
 import TLDCheck from "./api";
 
+// Call beautify functions
 prettyError.start();
 cliCursor.hide();
 

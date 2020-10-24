@@ -17,7 +17,7 @@
 
 > Brute-force the top-level domains with _parallel_.
 
-日本語は[こちら](https://github.com/P2P-Develop/TopDomainChecker/blob/main/docs/README-ja.md)。
+日本語は[こちら](https://github.com/P2P-Develop/TopDomainChecker/blob/develop/docs/README-ja.md)。
 
 ## Description
 
@@ -85,7 +85,7 @@ $ npm test
 ## 🤝 Contributing
 
 Contributions, issues and feature requests are welcome!  
-Feel free to check [issues page](https://github.com/P2P-Develop/TopDomainChecker/issues). You can also take a look at the [contributing guide](https://github.com/P2P-Develop/TopDomainChecker/blob/main/docs/CONTRIBUTING.md).
+Feel free to check [issues page](https://github.com/P2P-Develop/TopDomainChecker/issues). You can also take a look at the [contributing guide](https://github.com/P2P-Develop/TopDomainChecker/blob/develop/docs/CONTRIBUTING.md).
 
 ## Show your support
 
@@ -94,4 +94,4 @@ Give a ⭐️ if this project helped you!
 ## 📝 License
 
 © 2020 [P2P-Develop](https://github.com/P2P-Develop).  
-This project is [MIT](https://github.com/P2P-Develop/TopDomainChecker/blob/main/LICENSE) licensed.
+This project is [MIT](https://github.com/P2P-Develop/TopDomainChecker/blob/develop/LICENSE) licensed.
