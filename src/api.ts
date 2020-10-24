@@ -22,7 +22,7 @@ export default class TLDCheck {
 
     /**
      * Check single domain in non-static class.
-     * This requires await.
+     * This function requires await.
      *
      * @param domain The domain.
      *
@@ -34,7 +34,7 @@ export default class TLDCheck {
 
     /**
      * Check single domain.
-     * This requires await.
+     * This function requires await.
      *
      * @param domain The domain.
      * @param protocol Checking protocol.
@@ -71,7 +71,7 @@ export default class TLDCheck {
 
     /**
      * Create order the domain and tld.
-     * This requires await.
+     * This function requires await.
      *
      * @param domain  Domain name without the top-level domain.
      * @param additionalTLD Additional top-level domains.
