@@ -1,8 +1,3 @@
-#!/bin/sh
-/*/sh --version > /dev/null 2>&1
-exec npx ts-node "$0" "$@"
-*/
-
 import https from "https";
 import readline from "readline";
 import path from "path";
@@ -147,7 +142,7 @@ const usage_ = commandLineUsage([
 };
 
 if (arguments_.version) {
-    console.log("v4.0.0");
+    console.log("v4.0.2");
     process.exit(0);
 }
 
