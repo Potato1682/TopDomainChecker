@@ -28,45 +28,9 @@ Promise をうまく活用し複数の処理を一度に行っています。
 
 ## インストール方法
 
-1. このプロジェクトをクローンします。
-
-   HTTPS:
-
-   ```bash
-   $ git clone https://github.com/P2P-Develop/TopDomainChecker
-   ```
-
-   SSH:
-
-   ```bash
-   $ git clone git@github.com:P2P-Develop/TopDomainChecker
-   ```
-
-   [Github CLI](https://github.com/cli/cli):
-
-   ```bash
-   $ gh repo clone P2P-Develop/TopDomainChecker
-   ```
-
-2. 依存しているパッケージをインストールします。
-
-   ```bash
-   $ npm i
-   ```
-
-3. npm スクリプト `start` を実行します。
-
-   ```bash
-   $ npx ts-node src/index.ts -[vVhqD] [-t <Additional top-level domains...>] [-d] <Domains...>
-   ```
-
-<!--
-このプロジェクトは[npm](https://npmjs.com/package/tldcheck)からインストールすることができます。
-
 ```sh
 $ npm i -g tldcheck
 ```
--->
 
 ## 使い方
 
@@ -74,13 +38,11 @@ $ npm i -g tldcheck
 $ tldcheck -[vVhqDp] [-t <Additional top-level domains...>] [-d] <Domains...>
 ```
 
-<!--
 ## テストの実行
 
 ```sh
 $ npm test
 ```
--->
 
 ## 🤝 貢献
 
