@@ -2,14 +2,15 @@
     "name": "tld-checker",
     "version": "3.1.1",
     "description": "Brute-force the top-level domains with parallel.",
-    "main": "src/index.js",
+    "main": "src/index.ts",
     "scripts": {
         "build": "tsc -p .",
         "lint": "npm-run-all -p lint:*",
         "lint:js": "eslint .",
         "lint:md": "remark -r ./.remarkrc.yml .",
         "fix": "eslint --fix .",
-        "test": "jest"
+        "test": "jest",
+        "typedoc": "typedoc --out ./typedoc/ ./src/"
     },
     "bin": {
         "tldcheck": "src/index.js"
@@ -86,6 +87,7 @@
         "remark-preset-lint-recommended": "^4.0.1",
         "ts-jest": "^26.4.1",
         "ts-node": "^9.0.0",
+        "typedoc": "^0.19.2",
         "typescript": "^4.0.3"
     }
 }

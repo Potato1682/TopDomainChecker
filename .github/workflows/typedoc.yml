@@ -1,0 +1,68 @@
+name: JavaDoc
+
+on:
+    push:
+        branches: [develop]
+        paths: [src/**/*]
+
+jobs:
+    gen-typedoc:
+        name: Generate Typedoc
+
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: List files (for Debug)
+              run: ls -A
+
+            - name: Set up Node.js 15
+              uses: actions/setup-node@v2
+              with:
+                  node-version: "15"
+                  check-latest: true
+
+            - name: Get npm cache directory
+              id: npm-cache
+              run: |
+                  echo "::set-output name=dir::$(npm config get cache)"
+
+            - name: Cache
+              uses: actions/cache@v2
+              with:
+                  path: ${{ steps.npm-cache.outputs.dir }}
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-node-
+
+            - name: Generate Typedoc
+              run: npm run typedoc
+
+            - name: Stash
+              run: git stash -ua
+
+            - name: Change Branch
+              uses: actions/checkout@v2
+              with:
+                  ref: typedoc
+
+            - name: Apply Stash
+              run: git stash apply
+
+            - name: Copy Files
+              run: cp -rp ./typedoc/* .
+
+            - name: Remove TempFile
+              run: rm -rf typedoc
+
+            - name: Commit Typedoc
+              uses: EndBug/add-and-commit@v4
+              with:
+                  author_name: Typedoc BOT
+                  message: Generate Typedoc
+                  force: false
+                  ref: typedoc
+              env:
+                  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

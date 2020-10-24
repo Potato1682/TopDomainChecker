@@ -12,8 +12,11 @@
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitAny": true,
+        "removeComments": false,
+        "preserveConstEnums": true
     },
     "include": ["src/**/*", "test/**/*"],
-    "exclude": ["docs/**/*"]
+    "exclude": ["docs/**/*", "node_modules"]
 }
