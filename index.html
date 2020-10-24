@@ -86,44 +86,19 @@
 				<a href="#description" id="description" style="color: inherit; text-decoration: none;">
 					<h2>Description</h2>
 				</a>
-				<p>Brute-force the top-level domains with automated parallelism.<br>Makes the most of the Promises and brute-force it with multiple jobs.<br>Verify the existence of the host using ICMP echo.<br>The top-level domains are getting the latest list from <a href="https://data.iana.org/TLD/tlds-alpha-by-domain.txt">IANA</a>.</p>
+				<p>Brute-force the top-level domains with automated parallelism.<br>Makes the most of the Promises and brute-force it with multiple jobs.<br>You can verify the existence of the host using multi protocols.<br>The top-level domains are getting the latest list from <a href="https://data.iana.org/TLD/tlds-alpha-by-domain.txt">IANA</a>.</p>
 				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
 					<h2>Installation</h2>
 				</a>
-				<ol>
-					<li><p>Clone this project.</p>
-						<p>In HTTPS:</p>
-						<pre><code class="language-bash">$ git <span class="hljs-built_in">clone</span> https://github.com/P2P-Develop/TopDomainChecker</code></pre>
-						<p>In SSH:</p>
-						<pre><code class="language-bash">$ git <span class="hljs-built_in">clone</span> git@github.com:P2P-Develop/TopDomainChecker</code></pre>
-						<p>In <a href="https://github.com/cli/cli">Github CLI</a>:</p>
-						<pre><code class="language-bash">$ gh repo <span class="hljs-built_in">clone</span> P2P-Develop/TopDomainChecker</code></pre>
-					</li>
-					<li><p>Install dependencies.</p>
-						<pre><code class="language-bash">$ npm i</code></pre>
-					</li>
-					<li><p>Run the npm script <code>start</code>.</p>
-						<pre><code class="language-bash">$ npx ts-node src/index.ts -[vVhqD] [-t &lt;Additional top-level domains...&gt;] [-d] &lt;Domains...&gt;</code></pre>
-					</li>
-				</ol>
-				<!--
-This project can be installed from [npm](https://npmjs.com/package/tldcheck).
-
-```sh
-$ npm i -g tldcheck
-```
--->
+				<pre><code class="language-sh">$ npm i -g tld-checker</code></pre>
 				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
 					<h2>Usage</h2>
 				</a>
-				<pre><code class="language-sh">$ tldcheck -[vVhqD] [-t &lt;Additional top-level domains...&gt;] [-d] &lt;Domains...&gt;</code></pre>
-				<!--
-## Run tests
-
-```sh
-$ npm test
-```
--->
+				<pre><code class="language-sh">$ tldcheck -[vVhqDp] [-t &lt;Additional top-level domains...&gt;] [-d] &lt;Domains...&gt;</code></pre>
+				<a href="#run-tests" id="run-tests" style="color: inherit; text-decoration: none;">
+					<h2>Run tests</h2>
+				</a>
+				<pre><code class="language-sh">$ npm <span class="hljs-built_in">test</span></code></pre>
 				<a href="#🤝-contributing" id="🤝-contributing" style="color: inherit; text-decoration: none;">
 					<h2>🤝 Contributing</h2>
 				</a>
