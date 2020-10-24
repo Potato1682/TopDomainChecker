@@ -23,7 +23,7 @@
 
 Brute-force the top-level domains with automated parallelism.  
 Makes the most of the Promises and brute-force it with multiple jobs.  
-Verify the existence of the host using ICMP echo.  
+You can verify the existence of the host using multi protocols.  
 The top-level domains are getting the latest list from [IANA](https://data.iana.org/TLD/tlds-alpha-by-domain.txt).
 
 ## Installation
