@@ -29,8 +29,8 @@ describe("Order validation", () => {
 
 describe("Server alive validation in each protocol", () => {
     test("Server alive validation in ICMP echo request", async () => {
-        const expected = await TLDCheck.check("p2p-dev.team");
-        const expectInstanced = await new TLDCheck().check("p2p-dev.team");
+        const expected = await TLDCheck.check("google.com");
+        const expectInstanced = await new TLDCheck().check("google.com");
 
         expect(expected);
         expect(expectInstanced);
