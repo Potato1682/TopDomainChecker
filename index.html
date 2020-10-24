@@ -1,0 +1,182 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>tld-checker</title>
+	<meta name="description" content="Documentation for tld-checker">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">tld-checker</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>tld-checker</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<h1 align="center">TopDomainChecker</h1>
+				<p align="center">
+					<a href="https://github.com/P2P-Develop/TopDomainChecker/blob/main/package.json" target="_blank">
+						<img alt="Version" src="https://img.shields.io/github/package-json/v/P2P-Develop/TopDomainChecker?style=flat-square">
+					</a>
+					<a href="https://github.com/P2P-Develop/tree/main/docs" target="_blank">
+						<img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg?style=flat-square" />
+					</a>
+					<a href="https://github.com/P2P-Develop/TopDomainChecker/graphs/commit-activity" target="_blank">
+						<img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=flat-square" />
+					</a>
+					<a href="LICENSE" target="_blank">
+						<img alt="License: MIT" src="https://img.shields.io/github/license/P2P-Develop/TopDomainChecker?style=flat-square" />
+					</a>
+				</p>
+				<blockquote>
+					<p>Brute-force the top-level domains with <em>parallel</em>.</p>
+				</blockquote>
+				<p>日本語は<a href="docs/README-ja.md">こちら</a>。</p>
+				<a href="#description" id="description" style="color: inherit; text-decoration: none;">
+					<h2>Description</h2>
+				</a>
+				<p>Brute-force the top-level domains with automated parallelism.<br>Makes the most of the Promises and brute-force it with multiple jobs.<br>Verify the existence of the host using ICMP echo.<br>The top-level domains are getting the latest list from <a href="https://data.iana.org/TLD/tlds-alpha-by-domain.txt">IANA</a>.</p>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h2>Installation</h2>
+				</a>
+				<ol>
+					<li><p>Clone this project.</p>
+						<p>In HTTPS:</p>
+						<pre><code class="language-bash">$ git <span class="hljs-built_in">clone</span> https://github.com/P2P-Develop/TopDomainChecker</code></pre>
+						<p>In SSH:</p>
+						<pre><code class="language-bash">$ git <span class="hljs-built_in">clone</span> git@github.com:P2P-Develop/TopDomainChecker</code></pre>
+						<p>In <a href="https://github.com/cli/cli">Github CLI</a>:</p>
+						<pre><code class="language-bash">$ gh repo <span class="hljs-built_in">clone</span> P2P-Develop/TopDomainChecker</code></pre>
+					</li>
+					<li><p>Install dependencies.</p>
+						<pre><code class="language-bash">$ npm i</code></pre>
+					</li>
+					<li><p>Run the npm script <code>start</code>.</p>
+						<pre><code class="language-bash">$ npx ts-node src/index.ts -[vVhqD] [-t &lt;Additional top-level domains...&gt;] [-d] &lt;Domains...&gt;</code></pre>
+					</li>
+				</ol>
+				<!--
+This project can be installed from [npm](https://npmjs.com/package/tldcheck).
+
+```sh
+$ npm i -g tldcheck
+```
+-->
+				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+					<h2>Usage</h2>
+				</a>
+				<pre><code class="language-sh">$ tldcheck -[vVhqD] [-t &lt;Additional top-level domains...&gt;] [-d] &lt;Domains...&gt;</code></pre>
+				<!--
+## Run tests
+
+```sh
+$ npm test
+```
+-->
+				<a href="#🤝-contributing" id="🤝-contributing" style="color: inherit; text-decoration: none;">
+					<h2>🤝 Contributing</h2>
+				</a>
+				<p>Contributions, issues and feature requests are welcome!<br>Feel free to check <a href="https://github.com/P2P-Develop/TopDomainChecker/issues">issues page</a>. You can also take a look at the <a href="docs/CONTRIBUTING.md">contributing guide</a>.</p>
+				<a href="#show-your-support" id="show-your-support" style="color: inherit; text-decoration: none;">
+					<h2>Show your support</h2>
+				</a>
+				<p>Give a ⭐️ if this project helped you!</p>
+				<a href="#📝-license" id="📝-license" style="color: inherit; text-decoration: none;">
+					<h2>📝 License</h2>
+				</a>
+				<p>© 2020 <a href="https://github.com/P2P-Develop">P2P-Develop</a>.<br>This project is <a href="LICENSE">MIT</a> licensed.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_api_.html">&quot;api&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_index_.html">&quot;index&quot;</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
