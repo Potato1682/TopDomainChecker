@@ -1,4 +1,4 @@
-name: JavaDoc
+name: Typedoc
 
 on:
     push:
