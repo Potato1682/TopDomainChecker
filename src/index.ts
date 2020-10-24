@@ -142,7 +142,7 @@ const usage_ = commandLineUsage([
 };
 
 if (arguments_.version) {
-    console.log("v3.1.1");
+    console.log("v4.0.0");
     process.exit(0);
 }
 
