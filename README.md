@@ -28,45 +28,9 @@ The top-level domains are getting the latest list from [IANA](https://data.iana.
 
 ## Installation
 
-1. Clone this project.
-
-   In HTTPS:
-
-   ```bash
-   $ git clone https://github.com/P2P-Develop/TopDomainChecker
-   ```
-
-   In SSH:
-
-   ```bash
-   $ git clone git@github.com:P2P-Develop/TopDomainChecker
-   ```
-
-   In [Github CLI](https://github.com/cli/cli):
-
-   ```bash
-   $ gh repo clone P2P-Develop/TopDomainChecker
-   ```
-
-2. Install dependencies.
-
-   ```bash
-   $ npm i
-   ```
-
-3. Run the npm script `start`.
-
-   ```bash
-   $ npx ts-node src/index.ts -[vVhqD] [-t <Additional top-level domains...>] [-d] <Domains...>
-   ```
-
-<!--
-This project can be installed from [npm](https://npmjs.com/package/tldcheck).
-
 ```sh
 $ npm i -g tldcheck
 ```
--->
 
 ## Usage
 
@@ -74,13 +38,11 @@ $ npm i -g tldcheck
 $ tldcheck -[vVhqDp] [-t <Additional top-level domains...>] [-d] <Domains...>
 ```
 
-<!--
 ## Run tests
 
 ```sh
 $ npm test
 ```
--->
 
 ## 🤝 Contributing
 
