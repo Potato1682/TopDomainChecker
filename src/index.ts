@@ -127,6 +127,7 @@ const usage_ = commandLineUsage([
         { name: "quiet", alias: "q", type: Boolean, defaultValue: false },
         { name: "no-box", alias: "Q", type: Boolean, defaultValue: false },
         { name: "add-tld", alias: "t", type: String, defaultValue: [""], multiple: true },
+        { name: "protocol", alias: "p", type: String, defaultValue: "ping" },
         { name: "dry-run", alias: "D", type: Boolean, defaultValue: false }
     ]) as {
     version: boolean,
@@ -136,6 +137,7 @@ const usage_ = commandLineUsage([
     quiet: boolean,
     "no-box": boolean,
     "add-tld": string[],
+    protocol: "ping" | "http" | "https" | null,
     "dry-run": boolean
 };
 
@@ -247,6 +249,19 @@ if (stdin !== "") {
         addTld.push(...tldAnswer.topLevelDomains);
     }
 
+    if (arguments_.protocol === null) {
+        cliCursor.show();
+
+        const protocolAnswer = await Enquirer.prompt({
+            type: "select",
+            name: "protocol",
+            message: "Which protocol do you want to check",
+            choices: [ "Ping", "HTTP", "HTTPS" ]
+        }) as { protocol: "Ping" | "HTTP" | "HTTPS" };
+
+        arguments_.protocol = protocolAnswer.protocol.toLowerCase() as "ping" | "http" | "https";
+    }
+
     if (!arguments_.quiet) {
         requestGet();
     }
@@ -312,29 +327,31 @@ const main = async (topLevelDomains: string[]) => {
     }
 
     Promise.all(order.map(async (domain) => {
-        if (await TLDCheck.check(domain)) {
-            aliveDomain.push(domain);
-            if (!arguments_.quiet) {
-                process.stdout.write(`\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}` +
+        try {
+            if (await TLDCheck.check(domain, arguments_.protocol ?? "ping")) {
+                aliveDomain.push(domain);
+                if (!arguments_.quiet) {
+                    process.stdout.write(`\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}` +
                     " ".repeat(process.stdout.columns - `\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}`.length));
-                if (!arguments_.verbose) {
-                    readline.moveCursor(process.stdout, 0, -1);
-                } else {
-                    console.log();
+                    if (!arguments_.verbose) {
+                        readline.moveCursor(process.stdout, 0, -1);
+                    } else {
+                        console.log();
+                    }
+
+                    return;
                 }
-
-                return;
             }
-        }
-
-        if (!arguments_.quiet) {
-            process.stdout.write(`\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}` +
+        } catch {
+            if (!arguments_.quiet) {
+                process.stdout.write(`\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}` +
                 " ".repeat(process.stdout.columns - `\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}`.length));
 
-            if (arguments_.verbose) {
-                console.log();
-            } else {
-                readline.moveCursor(process.stdout, 0, -1);
+                if (arguments_.verbose) {
+                    console.log();
+                } else {
+                    readline.moveCursor(process.stdout, 0, -1);
+                }
             }
         }
     })).then(() => {

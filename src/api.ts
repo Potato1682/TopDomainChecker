@@ -63,9 +63,6 @@ export default class TLDCheck {
             } catch (error) {
                 return Promise.reject(error);
             }
-
-        default:
-            return Promise.reject(new Error("Invalid arguments"));
         }
     }
 

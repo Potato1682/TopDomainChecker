@@ -24,6 +24,25 @@
     "bugs": {
         "url": "https://github.com/P2P-Develop/TopDomainChecker/issues"
     },
+    "types": "dist/src",
+    "files": [
+        "dist/src"
+    ],
+    "keywords": [
+        "parallel",
+        "topleveldomains",
+        "tld",
+        "brute-force",
+        "ping",
+        "http",
+        "https",
+        "iana",
+        "topdomainchecker",
+        "tldcheck",
+        "tld-checker",
+        "domains",
+        "human-friendly"
+    ],
     "jest": {
         "moduleFileExtensions": [
             "ts",

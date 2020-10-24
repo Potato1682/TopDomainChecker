@@ -101,7 +101,6 @@ rules:
     curly:
         - error
 
-    default-case: error
     default-case-last: error
 
     default-param-last:

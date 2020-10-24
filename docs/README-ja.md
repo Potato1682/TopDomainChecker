@@ -71,7 +71,7 @@ $ npm i -g tldcheck
 ## 使い方
 
 ```sh
-$ tldcheck -[vVhqD] [-t <Additional top-level domains...>] [-d] <Domains...>
+$ tldcheck -[vVhqDp] [-t <Additional top-level domains...>] [-d] <Domains...>
 ```
 
 <!--
