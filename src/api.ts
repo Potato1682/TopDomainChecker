@@ -6,10 +6,38 @@ import got from "got";
  */
 export default class TLDCheck {
     /**
+     * Checking protocol property
+     */
+    protocol: "ping" | "http" | "https";
+
+    /**
+     * Constructor
+     *
+     * @param protocol Checking protocol
+     */
+    constructor(protocol: "ping" | "http" | "https" = "ping") {
+        this.protocol = protocol;
+    }
+
+    /**
+     * Check single domain in non-static class.
+     * This requires await.
+     *
+     * @param domain The domain
+     *
+     * @returns Pinging promise
+     */
+    async check(domain: string): Promise<boolean> {
+        return await TLDCheck.check(domain, this.protocol);
+    }
+
+    /**
      * Check single domain.
      * This requires await.
      *
      * @param domain The domain
+     * @param protocol Checking protocol
+     *
      * @returns Pinging promise
      */
     static async check(domain: string, protocol: "ping" | "http" | "https" = "ping"): Promise<boolean> {
@@ -46,6 +74,7 @@ export default class TLDCheck {
      *
      * @param domain  Domain name without the top-level domain
      * @param additionalTLD Additional top-level domains
+     *
      * @returns Ordered domains promise
      */
     static async createOrder(
