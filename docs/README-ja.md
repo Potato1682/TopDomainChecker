@@ -29,7 +29,7 @@ Promise をうまく活用し複数の処理を一度に行っています。
 ## インストール方法
 
 ```sh
-$ npm i -g tldcheck
+$ npm i -g tld-checker
 ```
 
 ## 使い方

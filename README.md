@@ -29,7 +29,7 @@ The top-level domains are getting the latest list from [IANA](https://data.iana.
 ## Installation
 
 ```sh
-$ npm i -g tldcheck
+$ npm i -g tld-checker
 ```
 
 ## Usage
