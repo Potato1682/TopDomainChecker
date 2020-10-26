@@ -23,7 +23,7 @@ cliCursor.hide();
 i18n.configure({
     locales: [ "en", "ja" ],
     directory: `${__dirname}/locales`,
-    defaultLocale: "ja"
+    defaultLocale: Intl.DateTimeFormat().resolvedOptions().locale === "ja-JP" ? "ja" : "en"
 });
 
 // Command usages and arguments
@@ -127,12 +127,12 @@ const usage_ = commandLineUsage([
             type: String,
             multiple: true,
             defaultOption: true,
-            defaultValue: [""]
+            defaultValue: ""
         },
         { name: "help", alias: "h", type: Boolean, defaultValue: false },
         { name: "quiet", alias: "q", type: Boolean, defaultValue: false },
         { name: "no-box", alias: "Q", type: Boolean, defaultValue: false },
-        { name: "add-tld", alias: "t", type: String, defaultValue: [""], multiple: true },
+        { name: "add-tld", alias: "t", type: String, multiple: true },
         { name: "protocol", alias: "p", type: String, defaultValue: "ping" },
         { name: "dry-run", alias: "D", type: Boolean, defaultValue: false }
     ]) as {
@@ -243,7 +243,7 @@ if (stdin !== "") {
         arguments_.domain = [...domainAnswer.domains];
     }
 
-    if (arguments_["add-tld"] === null) {
+    if ("add-tld" in arguments_ && arguments_["add-tld"] === []) {
         cliCursor.show();
 
         const tldAnswer = await Enquirer.prompt({
