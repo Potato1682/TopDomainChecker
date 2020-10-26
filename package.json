@@ -10,7 +10,8 @@
         "lint:md": "remark -r ./.remarkrc.yml .",
         "fix": "eslint --fix .",
         "test": "jest",
-        "typedoc": "typedoc --out ./typedoc/ ./src/"
+        "typedoc": "typedoc --out ./typedoc/ ./src/",
+        "release": "npm build && np"
     },
     "bin": {
         "tldcheck": "dist/src/index.js"
@@ -73,6 +74,7 @@
         "get-stdin": "^8.0.0",
         "got": "^11.8.0",
         "https": "^1.0.0",
+        "i18n": "^0.13.2",
         "ora": "^5.1.0",
         "ping": "^0.2.3",
         "pretty-error": "^2.1.2",
@@ -83,6 +85,7 @@
         "@types/command-line-args": "^5.0.0",
         "@types/command-line-usage": "^5.0.1",
         "@types/copy-paste": "^1.1.30",
+        "@types/i18n": "^0.8.7",
         "@types/jest": "^26.0.15",
         "@types/node": "^14.14.2",
         "@types/ping": "^0.2.0",

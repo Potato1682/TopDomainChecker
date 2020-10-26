@@ -1,6 +1,5 @@
 import https from "https";
 import readline from "readline";
-import path from "path";
 import boxen, { BorderStyle } from "boxen";
 import chalk from "chalk";
 import cliCursor from "cli-cursor";
@@ -13,74 +12,81 @@ import getStdin from "get-stdin";
 import ora from "ora";
 import prettyError from "pretty-error";
 import terminalLink from "terminal-link";
+import i18n, { __ } from "i18n";
+import __package from "../package.json";
 
 import TLDCheck from "./api";
 
 // Call beautify functions
 prettyError.start();
 cliCursor.hide();
+i18n.configure({
+    locales: [ "en", "ja" ],
+    directory: `${__dirname}/locales`,
+    defaultLocale: "ja"
+});
 
 // Command usages and arguments
 const usage_ = commandLineUsage([
         {
             header: "TopDomainChecker",
-            content: "Brute-force the top-level domain with {italic parallel}."
+            content: __("Brute-force the top-level domain with {italic parallel}.")
         },
         {
-            header: "Usage",
-            content: `$ ${path.basename(__filename)} -[vVhqD] [-t <Additional top-level domains...>] [-d] <Domains...>`
+            header: __("Usage"),
+            content: "$ tldcheck -[vVhqDp] [-t <Additional top-level domains...>] [-d] <Domains...>"
         },
         {
-            header: "Main Values",
+            header: __("Main Values"),
             content: [
                 {
                     name: "{bold [stdin]}",
                     summary:
-                    "Get the domain to search from the standard input. \n If the standard input does not find anything, you will be prompted with \n an argument or interactively."
+                    __("Get the domain to search from the standard input. \n If the standard input does not find anything, you will be prompted with \n an argument or interactively.")
                 }
             ]
         },
         {
-            header: "Misc Options",
+            header: __("Misc Options"),
             optionList: [
                 {
                     name: "version",
                     alias: "V",
-                    description: "Show checker version.",
+                    description: __("Show checker version."),
                     type: Boolean,
                     defaultValue: false
                 },
                 {
                     name: "verbose",
                     alias: "v",
-                    description: "Enable verbose logging.",
+                    description: __("Enable verbose logging."),
                     type: Boolean,
                     defaultValue: false
                 },
                 {
                     name: "help",
                     alias: "h",
-                    description: "Print this usage guide.",
+                    description: __("Print this usage guide."),
                     type: Boolean,
                     defaultValue: false
                 },
                 {
                     name: "dry-run",
                     alias: "D",
-                    description: "Show how many domains to check.",
+                    description: __("Show how many domains to check."),
                     type: Boolean,
                     defaultValue: false
                 },
                 {
                     name: "protocol",
-                    "alias": "p",
-                    description: "The protocol used for checking. If you use only the flag, show interactive prompt."
+                    alias: "p",
+                    description: __("The protocol used for checking. If you use only the flag, show interactive prompt.")
                 },
                 {
                     name: "quiet",
                     alias: "q",
                     description:
-                    "No notification is output, only the result is output.",
+                    __("No notification is output, only the result is output."),
                     type: Boolean,
                     defaultValue: false
                 },
@@ -88,7 +94,7 @@ const usage_ = commandLineUsage([
                     name: "no-box",
                     alias: "Q",
                     description:
-                    "Checker don't use boxes to display results. Only successful domains and line breaks are displayed. \n Use this with {bold --quiet}, it can be easily integrated with other programs.",
+                    __("Checker don't use boxes to display results. Only successful domains and line breaks are displayed. \n Use this with {bold --quiet}, it can be easily integrated with other programs."),
                     type: Boolean,
                     defaultValue: false
                 },
@@ -96,18 +102,18 @@ const usage_ = commandLineUsage([
                     name: "add-tld",
                     alias: "t",
                     description:
-                    "Enter additional top-level domains separated by spaces. If you use only the flag, show interactive prompt."
+                    __("Enter additional top-level domains separated by spaces. If you use only the flag, show interactive prompt.")
                 },
                 {
                     name: "domain",
                     alias: "d",
                     description:
-                    "{underline TopDomainChecker prioritizes arguments over standard inputs}. \n If it missing, show the interactive prompt. \n Also, {bold --domain} is specified as the default argument and is not required."
+                    __("{underline TopDomainChecker prioritizes arguments over standard inputs}. \n If it missing, show the interactive prompt. \n Also, {bold --domain} is specified as the default argument and is not required.")
                 }
             ]
         },
         {
-            content: `Project home: ${terminalLink(
+            content: `${__("Project home:")} ${terminalLink(
                 "GitHub",
                 "https://github.com/P2P-Develop/TopDomainChecker"
             )}`
@@ -142,7 +148,7 @@ const usage_ = commandLineUsage([
 };
 
 if (arguments_.version) {
-    console.log("v4.0.2");
+    console.log(`v${__package.version}`);
     process.exit(0);
 }
 
@@ -154,14 +160,14 @@ if (arguments_.help) {
 
 if (!arguments_["dry-run"] && arguments_.quiet && arguments_.verbose) {
     // quiet and verbose cannot be used at the same time without --dry-run
-    console.warn(`${chalk.yellowBright.inverse.bold(`  ${figures.warning}  `)} ${chalk.bold("--quiet")} and ${chalk.bold("--verbose")} cannot be used at same time! Replaced with default value!`);
+    console.warn(`${chalk.yellowBright.inverse.bold(`  ${figures.warning}  `)} ${chalk.bold("--quiet")} ${__("and")} ${chalk.bold("--verbose")} ${__("cannot be used at same time! Replaced with default value!")}`);
     arguments_.quiet = false;
     arguments_.verbose = false;
 }
 
 const requestGet = () => {
     let lockFlag = false;
-    const spinner = arguments_.verbose ? ora("Fetching top-level domains information from IANA...") : undefined;
+    const spinner = arguments_.verbose ? ora(__("Fetching top-level domains information from IANA...")) : undefined;
 
     if (typeof(spinner) !== "undefined") {
         spinner.start();
@@ -171,7 +177,7 @@ const requestGet = () => {
         response.on("data", (chunk) => {
             if (!lockFlag) {
                 if (spinner) {
-                    spinner.succeed(`Fetching top-level domains information from IANA...${chalk.greenBright("Success")}`);
+                    spinner.succeed(`${__("Fetching top-level domains information from IANA...")}${chalk.greenBright(__("Success"))}`);
                 }
 
                 main([
@@ -188,16 +194,16 @@ const requestGet = () => {
     }).on("error", (error) => {
         (async () => {
             if (spinner) {
-                spinner.fail(`Fetching top-level domains information from IANA...${chalk.redBright("Failed")}`);
+                spinner.fail(`${__("Fetching top-level domains information from IANA...")}${chalk.redBright(__("Failed"))}`);
             }
 
             console.error(error);
-            console.log(`${chalk.redBright(figures.pointer)} ${chalk.bold("Please report this issue to")} ${terminalLink("Github Issues", "https://github.com/P2P-Develop/TopDomainChecker/issues")}`);
+            console.log(`${chalk.redBright(figures.pointer)} ${chalk.bold(__("Please report this issue to"))} ${terminalLink("Github Issues", "https://github.com/P2P-Develop/TopDomainChecker/issues")}.`);
 
             const copyAnswer = await Enquirer.prompt({
                 type: "confirm",
                 name: "cp",
-                message: "Copy stack-trace to clip board?"
+                message: __("Copy the stack-trace to clip board?")
             }) as { cp: boolean };
 
             if (copyAnswer.cp) {
@@ -220,7 +226,7 @@ let stdin = "";
 })();
 
 if (stdin !== "") {
-    arguments_.domain = [ ...arguments_.domain ?? [], ...stdin.trim().split(" ") ];
+    arguments_.domain = [ ...arguments_.domain === null ? [] : arguments_.domain, ...stdin.trim().split(" ") ];
 } // If stdin has an input, merge domains
 
 (async () => {
@@ -231,7 +237,7 @@ if (stdin !== "") {
         const domainAnswer = await Enquirer.prompt({
             type: "list",
             name: "domains",
-            message: "Which domain names do you want to check (comma-separated)"
+            message: __("Which domain names do you want to check (comma-separated)")
         }) as { domains: string[] };
 
         arguments_.domain = [...domainAnswer.domains];
@@ -243,7 +249,7 @@ if (stdin !== "") {
         const tldAnswer = await Enquirer.prompt({
             type: "list",
             name: "topLevelDomains",
-            message: "Which top-level domains do you want to check (comma-separated)"
+            message: __("Which top-level domains do you want to check (comma-separated)")
         }) as { topLevelDomains: string[] };
 
         addTld.push(...tldAnswer.topLevelDomains);
@@ -255,12 +261,14 @@ if (stdin !== "") {
         const protocolAnswer = await Enquirer.prompt({
             type: "select",
             name: "protocol",
-            message: "Which protocol do you want to check",
+            message: __("Which protocol do you want to use"),
             choices: [ "Ping", "HTTP", "HTTPS" ]
         }) as { protocol: "Ping" | "HTTP" | "HTTPS" };
 
         arguments_.protocol = protocolAnswer.protocol.toLowerCase() as "ping" | "http" | "https";
     }
+
+    cliCursor.hide();
 
     if (!arguments_.quiet) {
         requestGet();
@@ -286,8 +294,8 @@ const main = async (topLevelDomains: string[]) => {
         }
 
         console.log(arguments_.verbose
-            ? `${chalk.bold.blue(figures.info)} Checker will be check the operating status of ${chalk.blueBright(topLevelDomains.length)} top-level domains in ${chalk.blueBright(arguments_.domain.length)} domain name${arguments_.domain.length > 1 ? "s" : ""}`
-            : `${chalk.bold.blue(figures.info)} Checker will be check the operating status of ${chalk.blueBright(order.length)} domain${order.length > 1 ? "s" : ""}`);
+            ? `${chalk.bold.blue(figures.info)} ${__("Checker will be check the operating status of")} ${chalk.blueBright(topLevelDomains.length)} ${__("top-level domains in")} ${chalk.blueBright(arguments_.domain.length)} ${__(`domain name${arguments_.domain.length > 1 ? "s" : ""}`)}`
+            : `${chalk.bold.blue(figures.info)} ${__("Checker will be check the operating status of")} ${chalk.blueBright(order.length)} ${__("domains")}`);
 
         process.exit(0);
     }
@@ -299,12 +307,12 @@ const main = async (topLevelDomains: string[]) => {
         arguments_.domain.forEach((d: string) => {
             topLevelDomains.map(tld => `${d}.${tld}`).forEach((uri) => {
                 order.push(uri);
-                process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} Adding ${chalk.blueBright(++tldCount)} top-level domains to ${chalk.blueBright(domainCount)} domain names`);
+                process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} ${__("Adding ")}${chalk.blueBright(++tldCount)} ${__("top-level domains to")} ${chalk.blueBright(domainCount)} ${__("domain names...")}`);
                 readline.moveCursor(process.stdout, 0, -1);
             });
 
             if (arguments_.domain.length > 1 && arguments_.domain.length !== domainCount) {
-                process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} Adding ${chalk.blueBright(tldCount)} top-level domains to ${chalk.blueBright(++domainCount)} domain names`);
+                process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} ${__("Adding ")}${chalk.blueBright(tldCount)} ${__("top-level domains to")} ${chalk.blueBright(++domainCount)} ${__("domain names...")}`);
                 readline.moveCursor(process.stdout, 0, -4);
             }
 
@@ -315,7 +323,7 @@ const main = async (topLevelDomains: string[]) => {
 
         arguments_.domain.forEach((d: string) => topLevelDomains.map(tld => `${d}.${tld}`).forEach((uri) => {
             order.push(uri);
-            process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} Adding ${chalk.bold.blueBright(++count)} domains`);
+            process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} ${__("Adding ")}${chalk.bold.blueBright(++count)} ${__("domains...")}`);
             readline.moveCursor(process.stdout, 0, -1);
         }));
 
@@ -331,8 +339,8 @@ const main = async (topLevelDomains: string[]) => {
             if (await TLDCheck.check(domain, arguments_.protocol ?? "ping")) {
                 aliveDomain.push(domain);
                 if (!arguments_.quiet) {
-                    process.stdout.write(`\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}` +
-                    " ".repeat(process.stdout.columns - `\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.greenBright("up")}`.length));
+                    process.stdout.write(`\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} ${__("is")} ${chalk.greenBright(__("up"))}` +
+                    " ".repeat(process.stdout.columns - `\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} ${__("is")} ${chalk.greenBright(__("up"))}`.length));
                     if (!arguments_.verbose) {
                         readline.moveCursor(process.stdout, 0, -1);
                     } else {
@@ -344,8 +352,8 @@ const main = async (topLevelDomains: string[]) => {
             }
         } catch {
             if (!arguments_.quiet) {
-                process.stdout.write(`\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}` +
-                " ".repeat(process.stdout.columns - `\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} is ${chalk.redBright("down")}`.length));
+                process.stdout.write(`\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} ${__("is")} ${chalk.redBright(__("down"))}` +
+                " ".repeat(process.stdout.columns - `\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} ${__("is")} ${chalk.redBright(__("down"))}`.length));
 
                 if (arguments_.verbose) {
                     console.log();
@@ -356,7 +364,7 @@ const main = async (topLevelDomains: string[]) => {
         }
     })).then(() => {
         if (!arguments_["no-box"]) {
-            console.log(boxen(`${chalk.bold.underline("--- Result---")}\n\n${chalk.bold.blueBright(aliveDomain.join("\n"))}\n\n${arguments_.verbose ? `${chalk.bold.magentaBright(order.length)} ${chalk.bold("/")} ${chalk.bold.cyanBright(aliveDomain.length)}` : chalk.bold.cyanBright(aliveDomain.length)} ${chalk.greenBright(aliveDomain.length > 1 ? "domains alive" : "domain alive")}`, {
+            console.log(boxen(`${chalk.bold.underline(__("--- Result---"))}\n\n${chalk.bold.blueBright(aliveDomain.join("\n"))}\n\n${arguments_.verbose ? `${chalk.bold.cyanBright(aliveDomain.length)} ${chalk.bold("/")} ${chalk.bold.magentaBright(order.length)}` : chalk.bold.cyanBright(aliveDomain.length)} ${chalk.greenBright(aliveDomain.length > 1 ? __("domains alive") : __("domain alive"))}`, {
                 padding: 1,
                 borderColor: "yellow",
                 margin: 2,
