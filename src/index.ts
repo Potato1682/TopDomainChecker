@@ -318,6 +318,9 @@ const main = async (topLevelDomains: string[]) => {
 
             readline.moveCursor(process.stdout, 0, 3);
         });
+
+        readline.moveCursor(process.stdout, 0, -1);
+        console.log(`\n${chalk.bold.greenBright(figures.tick)} ${__("Adding ")}${chalk.blueBright(tldCount)} ${__("top-level domains to")} ${chalk.blueBright(domainCount)} ${__("domain names...")}\n\n`);
     } else if (!arguments_.quiet) {
         let count = 0;
 
@@ -327,7 +330,8 @@ const main = async (topLevelDomains: string[]) => {
             readline.moveCursor(process.stdout, 0, -1);
         }));
 
-        console.log("\n\n");
+        readline.moveCursor(process.stdout, 0, -1);
+        console.log(`${chalk.bold.greenBright(figures.tick)} ${__("Adding ")}${chalk.bold.blueBright(count)} ${__("domains...")}\n\n`);
     } else {
         const tld = await TLDCheck.createOrder(arguments_.domain, addTld);
 
