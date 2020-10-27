@@ -338,13 +338,13 @@ const main = async (topLevelDomains: string[]) => {
         order.push(...tld);
     }
 
-    Promise.all(order.map(async (domain) => {
+    await Promise.all(order.map(async (domain) => {
         try {
             if (await TLDCheck.check(domain, arguments_.protocol ?? "ping")) {
                 aliveDomain.push(domain);
                 if (!arguments_.quiet) {
                     process.stdout.write(`\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} ${__("is")} ${chalk.greenBright(__("up"))}` +
-                    " ".repeat(process.stdout.columns - `\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} ${__("is")} ${chalk.greenBright(__("up"))}`.length));
+                        " ".repeat(process.stdout.columns - `\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} ${__("is")} ${chalk.greenBright(__("up"))}`.length));
                     if (!arguments_.verbose) {
                         readline.moveCursor(process.stdout, 0, -1);
                     } else {
@@ -357,7 +357,7 @@ const main = async (topLevelDomains: string[]) => {
         } catch {
             if (!arguments_.quiet) {
                 process.stdout.write(`\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} ${__("is")} ${chalk.redBright(__("down"))}` +
-                " ".repeat(process.stdout.columns - `\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} ${__("is")} ${chalk.redBright(__("down"))}`.length));
+                    " ".repeat(process.stdout.columns - `\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} ${__("is")} ${chalk.redBright(__("down"))}`.length));
 
                 if (arguments_.verbose) {
                     console.log();
@@ -366,17 +366,17 @@ const main = async (topLevelDomains: string[]) => {
                 }
             }
         }
-    })).then(() => {
-        if (!arguments_["no-box"]) {
-            console.log(boxen(`${chalk.bold.underline(__("--- Result---"))}\n\n${chalk.bold.blueBright(aliveDomain.join("\n"))}\n\n${arguments_.verbose ? `${chalk.bold.cyanBright(aliveDomain.length)} ${chalk.bold("/")} ${chalk.bold.magentaBright(order.length)}` : chalk.bold.cyanBright(aliveDomain.length)} ${chalk.greenBright(aliveDomain.length > 1 ? __("domains alive") : __("domain alive"))}`, {
-                padding: 1,
-                borderColor: "yellow",
-                margin: 2,
-                align: "center",
-                borderStyle: BorderStyle.Round
-            }));
-        } else {
-            process.stdout.write(aliveDomain.join("\n"));
-        }
-    });
+    }));
+
+    if (!arguments_["no-box"]) {
+        console.log(boxen(`${chalk.bold.underline(__("--- Result---"))}\n\n${chalk.bold.blueBright(aliveDomain.join("\n"))}\n\n${arguments_.verbose ? `${chalk.bold.cyanBright(aliveDomain.length)} ${chalk.bold("/")} ${chalk.bold.magentaBright(order.length)}` : chalk.bold.cyanBright(aliveDomain.length)} ${chalk.greenBright(aliveDomain.length > 1 ? __("domains alive") : __("domain alive"))}`, {
+            padding: 1,
+            borderColor: "yellow",
+            margin: 2,
+            align: "center",
+            borderStyle: BorderStyle.Round
+        }));
+    } else {
+        process.stdout.write(aliveDomain.join("\n"));
+    }
 };
