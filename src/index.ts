@@ -237,7 +237,7 @@ if (stdin !== "") {
         const domainAnswer = await Enquirer.prompt({
             type: "list",
             name: "domains",
-            message: __("Which domain names do you want to check (comma-separated)")
+            message: __("What domain names do you want to check (comma-separated)")
         }) as { domains: string[] };
 
         arguments_.domain = [...domainAnswer.domains];
@@ -249,7 +249,7 @@ if (stdin !== "") {
         const tldAnswer = await Enquirer.prompt({
             type: "list",
             name: "topLevelDomains",
-            message: __("Which top-level domains do you want to check (comma-separated)")
+            message: __("What top-level domains do you want to check (comma-separated)")
         }) as { topLevelDomains: string[] };
 
         addTld.push(...tldAnswer.topLevelDomains);
@@ -261,7 +261,7 @@ if (stdin !== "") {
         const protocolAnswer = await Enquirer.prompt({
             type: "select",
             name: "protocol",
-            message: __("Which protocol do you want to use"),
+            message: __("Which protocol do you use"),
             choices: [ "Ping", "HTTP", "HTTPS" ]
         }) as { protocol: "Ping" | "HTTP" | "HTTPS" };
 

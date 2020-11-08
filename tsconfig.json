@@ -7,7 +7,6 @@
         "outDir": "dist",
         "strict": true,
         "moduleResolution": "node",
-        "typeRoots": ["src/types"],
         "types": ["@types/jest"],
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,

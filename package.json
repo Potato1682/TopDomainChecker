@@ -4,7 +4,7 @@
     "description": "Brute-force the top-level domains with parallel.",
     "main": "dist/src",
     "scripts": {
-        "build": "tsc -p .",
+        "build": "tsc -p . && cp -r ./src/locales ./dist/src",
         "lint": "npm-run-all -p lint:*",
         "lint:js": "eslint .",
         "lint:md": "remark -r ./.remarkrc.yml .",
