@@ -1,4 +1,4 @@
-name: Lint
+name: Test
 
 on:
     push:
@@ -7,8 +7,8 @@ on:
         branches: [main, develop]
 
 jobs:
-    lint:
-        name: "Lint code with ESLint and Remark"
+    test:
+        name: Test
 
         runs-on: ubuntu-latest
 
@@ -42,15 +42,11 @@ jobs:
             - name: Install dependencies
               run: pnpm i
 
-            - name: ESLint review
-              uses: reviewdog/action-eslint@v1
-              with:
-                  github_token: ${{ secrets.GITHUB_TOKEN }}
-                  reporter: github-pr-review
+            - name: Run jest
+              run: pnpm run test
+                  CI: true
 
-            - name: Remark Lint review
-              uses: reviewdog/action-remark-lint@v1
+            - name: Upload coverage
+              uses: codecov/codecov-action@v1
               with:
-                  github_token: ${{ secrets.GITHUB_TOKEN }}
-                  reporter: github-pr-review
-                  remark_args: "-r .remarkrc.js ."
+                  token: ${{ secrets.CODECOV_TOKEN }}
