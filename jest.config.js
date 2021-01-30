@@ -13,7 +13,7 @@ module.exports = {
         }
     },
     testMatch: [
-        "**/test/**/*.test.ts"
+        "**/tests/**/*.test.ts"
     ],
     reporters: [
         "default",
