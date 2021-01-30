@@ -1,6 +1,7 @@
 import https from "https";
+import path from "path";
 import readline from "readline";
-import boxen, { BorderStyle } from "boxen";
+import boxen from "boxen";
 import chalk from "chalk";
 import cliCursor from "cli-cursor";
 import commandLineArgs from "command-line-args";
@@ -22,103 +23,90 @@ prettyError.start();
 cliCursor.hide();
 i18n.configure({
     locales: [ "en", "ja" ],
-    directory: `${__dirname}/locales`,
+    directory: path.join(__dirname, "locales"),
     defaultLocale: Intl.DateTimeFormat().resolvedOptions().locale === "ja-JP" ? "ja" : "en"
 });
 
 // Command usages and arguments
-const usage_ = commandLineUsage([
-        {
-            header: "TopDomainChecker",
-            content: __("Brute-force the top-level domain with {italic parallel}.")
-        },
-        {
-            header: __("Usage"),
-            content: "$ tldcheck -[vVhqDp] [-t <Additional top-level domains...>] [-d] <Domains...>"
-        },
-        {
-            header: __("Main Values"),
-            content: [
-                {
-                    name: "{bold [stdin]}",
-                    summary:
-                    __("Get the domain to search from the standard input. \n If the standard input does not find anything, you will be prompted with \n an argument or interactively.")
-                }
-            ]
-        },
-        {
-            header: __("Misc Options"),
-            optionList: [
-                {
-                    name: "version",
-                    alias: "V",
-                    description: __("Show checker version."),
-                    type: Boolean,
-                    defaultValue: false
-                },
-                {
-                    name: "verbose",
-                    alias: "v",
-                    description: __("Enable verbose logging."),
-                    type: Boolean,
-                    defaultValue: false
-                },
-                {
-                    name: "help",
-                    alias: "h",
-                    description: __("Print this usage guide."),
-                    type: Boolean,
-                    defaultValue: false
-                },
-                {
-                    name: "dry-run",
-                    alias: "D",
-                    description: __("Show how many domains to check."),
-                    type: Boolean,
-                    defaultValue: false
-                },
-                {
-                    name: "protocol",
-                    alias: "p",
-                    description: __("The protocol used for checking. If you use only the flag, show interactive prompt.")
-                },
-                {
-                    name: "quiet",
-                    alias: "q",
-                    description:
-                    __("No notification is output, only the result is output."),
-                    type: Boolean,
-                    defaultValue: false
-                },
-                {
-                    name: "no-box",
-                    alias: "Q",
-                    description:
-                    __("Checker don't use boxes to display results. Only successful domains and line breaks are displayed. \n Use this with {bold --quiet}, it can be easily integrated with other programs."),
-                    type: Boolean,
-                    defaultValue: false
-                },
-                {
-                    name: "add-tld",
-                    alias: "t",
-                    description:
-                    __("Enter additional top-level domains separated by spaces. If you use only the flag, show interactive prompt.")
-                },
-                {
-                    name: "domain",
-                    alias: "d",
-                    description:
-                    __("{underline TopDomainChecker prioritizes arguments over standard inputs}. \n If it missing, show the interactive prompt. \n Also, {bold --domain} is specified as the default argument and is not required.")
-                }
-            ]
-        },
-        {
-            content: `${__("Project home:")} ${terminalLink(
-                "GitHub",
-                "https://github.com/P2P-Develop/TopDomainChecker"
-            )}`
-        }
-    ]), arguments_ = commandLineArgs([
+const usage_ = commandLineUsage([{
+        header: "TopDomainChecker",
+        content: __("Brute-force the top-level domain with {italic parallel}.")
+    }, {
+        header: __("Usage"),
+        content: "$ tldcheck -[vVhqDp] [-t <Additional top-level domains...>] [-d] <Domains...>"
+    }, {
+        header: __("Main Values"),
+        content: [{
+            name: "{bold [stdin]}",
+            summary:
+            __("Get the domain to search from the standard input. \n If the standard input does not find anything, you will be prompted with \n an argument or interactively.")
+        }]
+    }, {
+        header: __("Misc Options"),
+        optionList: [{
+            name: "version",
+            alias: "V",
+            description:
+            __("Show checker version."),
+            type: Boolean,
+            defaultValue: false
+        }, {
+            name: "verbose",
+            alias: "v",
+            description:
+            __("Enable verbose logging."),
+            type: Boolean,
+            defaultValue: false
+        }, {
+            name: "help",
+            alias: "h",
+            description:
+            __("Print this usage guide."),
+            type: Boolean,
+            defaultValue: false
+        }, {
+            name: "dry-run",
+            alias: "D",
+            description:
+            __("Show how many domains to check."),
+            type: Boolean,
+            defaultValue: false
+        }, {
+            name: "protocol",
+            alias: "p",
+            description:
+            __("The protocol used for checking. If you use only the flag, show interactive prompt.")
+        }, {
+            name: "quiet",
+            alias: "q",
+            description:
+            __("No notification is output, only the result is output."),
+            type: Boolean,
+            defaultValue: false
+        }, {
+            name: "no-box",
+            alias: "Q",
+            description:
+            __("Checker don't use boxes to display results. Only successful domains and line breaks are displayed. \n Use this with {bold --quiet}, it can be easily integrated with other programs."),
+            type: Boolean,
+            defaultValue: false
+        }, {
+            name: "add-tld",
+            alias: "t",
+            description:
+            __("Enter additional top-level domains separated by spaces. If you use only the flag, show interactive prompt.")
+        }, {
+            name: "domain",
+            alias: "d",
+            description:
+            __("{underline TopDomainChecker prioritizes arguments over standard inputs}. \n If it missing, show the interactive prompt. \n Also, {bold --domain} is specified as the default argument and is not required.")
+        }]
+    }, {
+        content: `${__("Project home:")} ${terminalLink(
+            "GitHub",
+            "https://github.com/P2P-Develop/TopDomainChecker"
+        )}`
+    }]), arguments_ = commandLineArgs([
         { name: "version", alias: "V", type: Boolean, defaultValue: false },
         { name: "verbose", alias: "v", type: Boolean, defaultValue: false },
         {
@@ -167,6 +155,7 @@ if (!arguments_["dry-run"] && arguments_.quiet && arguments_.verbose) {
 
 const requestGet = () => {
     let lockFlag = false;
+
     const spinner = arguments_.verbose ? ora(__("Fetching top-level domains information from IANA...")) : undefined;
 
     if (typeof(spinner) !== "undefined") {
@@ -186,7 +175,7 @@ const requestGet = () => {
                         .split(/\r\n|\n|\r/)
                         .filter(tld => !tld.startsWith("#") || tld.length < 3)),
                     ...addTld
-                ]);
+                ]).then();
             } else {
                 lockFlag = true;
             }
@@ -215,7 +204,6 @@ const requestGet = () => {
 
 // Ping -> OK domains
 const aliveDomain: string[] = [];
-
 const addTld = [ "co.jp", "or,jp", "ne.jp", "ac.jp", "ad.jp", "ed.jp", "go.jp", "gr.jp", "lg.jp" ];
 
 // Check stdin (no input -> empty)
@@ -240,7 +228,7 @@ if (stdin !== "") {
             message: __("What domain names do you want to check (comma-separated)")
         }) as { domains: string[] };
 
-        arguments_.domain = [...domainAnswer.domains];
+        arguments_.domain = [ ...domainAnswer.domains ];
     }
 
     if ("add-tld" in arguments_ && arguments_["add-tld"] === []) {
@@ -304,12 +292,12 @@ const main = async (topLevelDomains: string[]) => {
         let domainCount = 1;
         let tldCount = 0;
 
-        arguments_.domain.forEach((d: string) => {
-            topLevelDomains.map(tld => `${d}.${tld}`).forEach((uri) => {
+        for (const d of arguments_.domain) {
+            for (const uri of topLevelDomains.map(tld => `${d}.${tld}`)) {
                 order.push(uri);
                 process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} ${__("Adding ")}${chalk.blueBright(++tldCount)} ${__("top-level domains to")} ${chalk.blueBright(domainCount)} ${__("domain names...")}`);
                 readline.moveCursor(process.stdout, 0, -1);
-            });
+            }
 
             if (arguments_.domain.length > 1 && arguments_.domain.length !== domainCount) {
                 process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} ${__("Adding ")}${chalk.blueBright(tldCount)} ${__("top-level domains to")} ${chalk.blueBright(++domainCount)} ${__("domain names...")}`);
@@ -317,18 +305,20 @@ const main = async (topLevelDomains: string[]) => {
             }
 
             readline.moveCursor(process.stdout, 0, 3);
-        });
+        }
 
         readline.moveCursor(process.stdout, 0, -1);
         console.log(`\n${chalk.bold.greenBright(figures.tick)} ${__("Adding ")}${chalk.blueBright(tldCount)} ${__("top-level domains to")} ${chalk.blueBright(domainCount)} ${__("domain names...")}\n\n`);
     } else if (!arguments_.quiet) {
         let count = 0;
 
-        arguments_.domain.forEach((d: string) => topLevelDomains.map(tld => `${d}.${tld}`).forEach((uri) => {
-            order.push(uri);
-            process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} ${__("Adding ")}${chalk.bold.blueBright(++count)} ${__("domains...")}`);
-            readline.moveCursor(process.stdout, 0, -1);
-        }));
+        for (const d of arguments_.domain)  {
+            for (const uri of topLevelDomains.map(tld => `${d}.${tld}`)) {
+                order.push(uri);
+                process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} ${__("Adding ")}${chalk.bold.blueBright(++count)} ${__("domains...")}`);
+                readline.moveCursor(process.stdout, 0, -1);
+            }
+        }
 
         readline.moveCursor(process.stdout, 0, -1);
         console.log(`${chalk.bold.greenBright(figures.tick)} ${__("Adding ")}${chalk.bold.blueBright(count)} ${__("domains...")}\n\n`);
@@ -374,7 +364,7 @@ const main = async (topLevelDomains: string[]) => {
             borderColor: "yellow",
             margin: 2,
             align: "center",
-            borderStyle: BorderStyle.Round
+            borderStyle: "round"
         }));
     } else {
         process.stdout.write(aliveDomain.join("\n"));

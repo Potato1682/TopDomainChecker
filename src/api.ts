@@ -43,26 +43,26 @@ export default class TLDCheck {
      */
     static async check(domain: string, protocol: "ping" | "http" | "https" = "ping"): Promise<boolean> {
         switch (protocol) {
-        case "ping":
-            return (await promise.probe(domain)).alive;
+            case "ping":
+                return (await promise.probe(domain, { extra: process.platform === "linux" ? [ "-t 1" ] : undefined })).alive;
 
-        case "http":
-            try {
-                await got(`http://${domain}`);
+            case "http":
+                try {
+                    await got(`http://${domain}`);
 
-                return true;
-            } catch (error) {
-                return Promise.reject(error);
-            }
+                    return true;
+                } catch (error) {
+                    return Promise.reject(error);
+                }
 
-        case "https":
-            try {
-                await got(`https://${domain}`);
+            case "https":
+                try {
+                    await got(`https://${domain}`);
 
-                return true;
-            } catch (error) {
-                return Promise.reject(error);
-            }
+                    return true;
+                } catch (error) {
+                    return Promise.reject(error);
+                }
         }
     }
 
@@ -77,7 +77,7 @@ export default class TLDCheck {
      */
     static async createOrder(
         domain: string[],
-        additionalTLD: string[] = [""]
+        additionalTLD: string[] = [ "" ]
     ): Promise<string[]> {
         if (domain.join("").trim().length === 0) {
             return [];
@@ -89,11 +89,9 @@ export default class TLDCheck {
         }
 
         const order: string[] = [];
-        let topLevelDomains: string[] = [];
-
         const response = await got("https://data.iana.org/TLD/tlds-alpha-by-domain.txt");
 
-        topLevelDomains = [
+        const topLevelDomains = [
             ...(response.body
                 .toLowerCase()
                 .split(/\r\n|\n/)
@@ -101,8 +99,10 @@ export default class TLDCheck {
             ...additionalTLD
         ];
 
-        domain.forEach(d => topLevelDomains.map(t => `${d}.${t}`).forEach(uri => order.push(uri)));
+        for (const d of domain)  {
+            order.push(...topLevelDomains.map(t => `${d}.${t}`));
+        }
 
-        return [...new Set(order)];
+        return [ ...new Set(order) ];
     }
 }

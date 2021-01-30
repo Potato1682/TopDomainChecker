@@ -7,7 +7,10 @@
         "outDir": "dist",
         "strict": true,
         "moduleResolution": "node",
-        "types": ["@types/jest"],
+        "types": [
+            "@types/node",
+            "@types/jest"
+        ],
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
@@ -27,6 +30,12 @@
         "noFallthroughCasesInSwitch": true,
         "noEmitOnError": true
     },
-    "include": ["src", "test"],
-    "exclude": ["docs/**/*", "node_modules"]
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "docs/**/*",
+        "node_modules",
+        "test"
+    ]
 }
