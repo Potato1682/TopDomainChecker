@@ -45,7 +45,7 @@
         "lint:md": "remark -r .remarkrc.js .",
         "release": "npm run build && np",
         "start": "node --require ts-node/register src/index.ts",
-        "test": "jest",
+        "test": "jest --coverage",
         "posttest": "npm run lint",
         "typedoc": "typedoc --out typedoc src"
     },

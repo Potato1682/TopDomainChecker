@@ -19,6 +19,5 @@ module.exports = {
         "default",
         "jest-github-actions-reporter"
     ],
-    testLocationInResults: true,
-    coverage: true
+    testLocationInResults: true
 };
