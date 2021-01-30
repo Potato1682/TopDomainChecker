@@ -1,9 +1,9 @@
-import https from "https";
 import path from "path";
 import readline from "readline";
 import boxen from "boxen";
 import chalk from "chalk";
 import cliCursor from "cli-cursor";
+import cliTruncate from "cli-truncate";
 import commandLineArgs from "command-line-args";
 import commandLineUsage from "command-line-usage";
 import ncp from "copy-paste";
@@ -153,71 +153,18 @@ if (!arguments_["dry-run"] && arguments_.quiet && arguments_.verbose) {
     arguments_.verbose = false;
 }
 
-const requestGet = () => {
-    let lockFlag = false;
-
-    const spinner = arguments_.verbose ? ora(__("Fetching top-level domains information from IANA...")) : undefined;
-
-    if (typeof(spinner) !== "undefined") {
-        spinner.start();
-    }
-
-    https.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt", (response) => {
-        response.on("data", (chunk) => {
-            if (!lockFlag) {
-                if (spinner) {
-                    spinner.succeed(`${__("Fetching top-level domains information from IANA...")}${chalk.greenBright(__("Success"))}`);
-                }
-
-                main([
-                    ...(`${chunk}`
-                        .toLowerCase()
-                        .split(/\r\n|\n|\r/)
-                        .filter(tld => !tld.startsWith("#") || tld.length < 3)),
-                    ...addTld
-                ]).then();
-            } else {
-                lockFlag = true;
-            }
-        });
-    }).on("error", (error) => {
-        (async () => {
-            if (spinner) {
-                spinner.fail(`${__("Fetching top-level domains information from IANA...")}${chalk.redBright(__("Failed"))}`);
-            }
-
-            console.error(error);
-            console.log(`${chalk.redBright(figures.pointer)} ${chalk.bold(__("Please report this issue to"))} ${terminalLink("Github Issues", "https://github.com/P2P-Develop/TopDomainChecker/issues")}.`);
-
-            const copyAnswer = await Enquirer.prompt({
-                type: "confirm",
-                name: "cp",
-                message: __("Copy the stack-trace to clip board?")
-            }) as { cp: boolean };
-
-            if (copyAnswer.cp) {
-                ncp.copy(error);
-            }
-        })();
-    });
-};
-
 // Ping -> OK domains
 const aliveDomain: string[] = [];
 const addTld = [ "co.jp", "or,jp", "ne.jp", "ac.jp", "ad.jp", "ed.jp", "go.jp", "gr.jp", "lg.jp" ];
 
-// Check stdin (no input -> empty)
-let stdin = "";
-
 (async () => {
-    stdin = await getStdin();
-})();
+    // Check stdin (no input -> empty)
+    const stdin = await getStdin();
 
-if (stdin !== "") {
-    arguments_.domain = [ ...arguments_.domain === null ? [] : arguments_.domain, ...stdin.trim().split(" ") ];
-} // If stdin has an input, merge domains
+    if (stdin !== "") {
+        arguments_.domain = [ ...arguments_.domain === null ? [] : arguments_.domain, ...stdin.trim().split(" ") ];
+    } // If stdin has an input, merge domains
 
-(async () => {
     // If also not, show cursor and interactive prompt
     if (!("" in arguments_.domain)) {
         cliCursor.show();
@@ -258,115 +205,111 @@ if (stdin !== "") {
 
     cliCursor.hide();
 
-    if (!arguments_.quiet) {
-        requestGet();
-    }
-})();
+    let orderedDomains: string[];
 
-const main = async (topLevelDomains: string[]) => {
+    const spinner = arguments_.verbose ? ora(__("Fetching top-level domains information from IANA...")) : undefined;
+
+    if (spinner) {
+        spinner.start();
+    }
+
+    if (!arguments_.quiet) {
+        try {
+            orderedDomains = await TLDCheck.createOrder(arguments_.domain, addTld);
+
+            if (spinner) {
+                spinner.succeed(`${__("Fetching top-level domains information from IANA...")}${chalk.greenBright(__("Success"))}`);
+            }
+        } catch (error) {
+            if (spinner) {
+                spinner.fail(`${__("Fetching top-level domains information from IANA...")}${chalk.redBright(__("Failed"))}`);
+            }
+
+            console.error(error);
+            console.log(`${chalk.redBright(figures.pointer)} ${chalk.bold(__("Please report this issue to"))} ${terminalLink("Github Issues", "https://github.com/P2P-Develop/TopDomainChecker/issues")}.`);
+
+            const copyAnswer = await Enquirer.prompt({
+                type: "confirm",
+                name: "cp",
+                message: __("Copy the stack-trace to clip board?")
+            }) as { cp: boolean };
+
+            if (copyAnswer.cp) {
+                ncp.copy(error);
+            }
+
+            process.exit(1);
+        }
+    } else {
+        orderedDomains = await TLDCheck.createOrder(arguments_.domain, addTld);
+    }
+
     cliCursor.hide();
 
-    const order: string[] = [];
-
     if (arguments_["dry-run"]) {
-        const tld = await TLDCheck.createOrder(arguments_.domain, addTld);
-
-        order.push(...tld);
-
         if (arguments_.quiet) {
             console.log(arguments_.verbose
-                ? `${topLevelDomains.length} * ${arguments_.domain.length}`
-                : `${order.length}`);
+                ? `${(await TLDCheck.fetchTLDs()).length} * ${arguments_.domain.length}`
+                : `${orderedDomains.length}`);
 
             process.exit(0);
         }
 
         console.log(arguments_.verbose
-            ? `${chalk.bold.blue(figures.info)} ${__("Checker will be check the operating status of")} ${chalk.blueBright(topLevelDomains.length)} ${__("top-level domains in")} ${chalk.blueBright(arguments_.domain.length)} ${__(`domain name${arguments_.domain.length > 1 ? "s" : ""}`)}`
-            : `${chalk.bold.blue(figures.info)} ${__("Checker will be check the operating status of")} ${chalk.blueBright(order.length)} ${__("domains")}`);
+            ? `${chalk.bold.blue(figures.info)} ${__("Checker will be check the operating status of")} ${chalk.blueBright((await TLDCheck.fetchTLDs()).length)} ${__("top-level domains in")} ${chalk.blueBright(arguments_.domain.length)} ${__(`domain name${arguments_.domain.length > 1 ? "s" : ""}`)}`
+            : `${chalk.bold.blue(figures.info)} ${__("Checker will be check the operating status of")} ${chalk.blueBright(orderedDomains.length)} ${__("domains")}`);
 
         process.exit(0);
     }
 
-    if (arguments_.verbose) {
-        let domainCount = 1;
-        let tldCount = 0;
-
-        for (const d of arguments_.domain) {
-            for (const uri of topLevelDomains.map(tld => `${d}.${tld}`)) {
-                order.push(uri);
-                process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} ${__("Adding ")}${chalk.blueBright(++tldCount)} ${__("top-level domains to")} ${chalk.blueBright(domainCount)} ${__("domain names...")}`);
-                readline.moveCursor(process.stdout, 0, -1);
-            }
-
-            if (arguments_.domain.length > 1 && arguments_.domain.length !== domainCount) {
-                process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} ${__("Adding ")}${chalk.blueBright(tldCount)} ${__("top-level domains to")} ${chalk.blueBright(++domainCount)} ${__("domain names...")}`);
-                readline.moveCursor(process.stdout, 0, -4);
-            }
-
-            readline.moveCursor(process.stdout, 0, 3);
+    const resultFunction = () => {
+        if (!arguments_["no-box"]) {
+            console.log(boxen(`${chalk.bold.underline(__("--- Result---"))}\n\n${chalk.bold.blueBright(aliveDomain.join("\n"))}\n\n${arguments_.verbose ? `${chalk.bold.cyanBright(aliveDomain.length)} ${chalk.bold("/")} ${chalk.bold.magentaBright(orderedDomains.length)}` : chalk.bold.cyanBright(aliveDomain.length)} ${chalk.greenBright(aliveDomain.length > 1 ? __("domains alive") : __("domain alive"))}`, {
+                padding: 1,
+                borderColor: "yellow",
+                margin: 2,
+                align: "center",
+                borderStyle: "round"
+            }));
+        } else {
+            process.stdout.write(aliveDomain.join("\n"));
         }
+    };
 
-        readline.moveCursor(process.stdout, 0, -1);
-        console.log(`\n${chalk.bold.greenBright(figures.tick)} ${__("Adding ")}${chalk.blueBright(tldCount)} ${__("top-level domains to")} ${chalk.blueBright(domainCount)} ${__("domain names...")}\n\n`);
-    } else if (!arguments_.quiet) {
-        let count = 0;
+    process.on("SIGINT", () => {
+        resultFunction();
+        process.exit();
+    });
 
-        for (const d of arguments_.domain)  {
-            for (const uri of topLevelDomains.map(tld => `${d}.${tld}`)) {
-                order.push(uri);
-                process.stdout.write(`\n${chalk.bold.magenta(figures.pointer)} ${__("Adding ")}${chalk.bold.blueBright(++count)} ${__("domains...")}`);
-                readline.moveCursor(process.stdout, 0, -1);
-            }
+    const printDomain = (domain: string) => {
+        console.log();
+        readline.clearLine(process.stdout, 0);
+        process.stdout.write(cliTruncate(`${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} ${__("is")} ${chalk.redBright(__("down"))}`, process.stdout.columns));
+
+        if (arguments_.verbose) {
+            console.log();
+        } else {
+            readline.moveCursor(process.stdout, 0, -1);
+            readline.cursorTo(process.stdout, 0);
         }
+    };
 
-        readline.moveCursor(process.stdout, 0, -1);
-        console.log(`${chalk.bold.greenBright(figures.tick)} ${__("Adding ")}${chalk.bold.blueBright(count)} ${__("domains...")}\n\n`);
-    } else {
-        const tld = await TLDCheck.createOrder(arguments_.domain, addTld);
-
-        order.push(...tld);
-    }
-
-    await Promise.all(order.map(async (domain) => {
+    await Promise.all(orderedDomains.map(async (domain) => {
         try {
             if (await TLDCheck.check(domain, arguments_.protocol ?? "ping")) {
                 aliveDomain.push(domain);
                 if (!arguments_.quiet) {
-                    process.stdout.write(`\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} ${__("is")} ${chalk.greenBright(__("up"))}` +
-                        " ".repeat(process.stdout.columns - `\n${chalk.greenBright.inverse(`  ${figures.tick}  `)}  ${chalk.bold.cyan(domain)} ${__("is")} ${chalk.greenBright(__("up"))}`.length));
-                    if (!arguments_.verbose) {
-                        readline.moveCursor(process.stdout, 0, -1);
-                    } else {
-                        console.log();
-                    }
+                    printDomain(domain);
 
                     return;
                 }
             }
         } catch {
             if (!arguments_.quiet) {
-                process.stdout.write(`\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} ${__("is")} ${chalk.redBright(__("down"))}` +
-                    " ".repeat(process.stdout.columns - `\n${chalk.redBright.inverse(`  ${figures.cross}  `)}  ${chalk.bold.cyan(domain)} ${__("is")} ${chalk.redBright(__("down"))}`.length));
-
-                if (arguments_.verbose) {
-                    console.log();
-                } else {
-                    readline.moveCursor(process.stdout, 0, -1);
-                }
+                printDomain(domain);
             }
         }
     }));
 
-    if (!arguments_["no-box"]) {
-        console.log(boxen(`${chalk.bold.underline(__("--- Result---"))}\n\n${chalk.bold.blueBright(aliveDomain.join("\n"))}\n\n${arguments_.verbose ? `${chalk.bold.cyanBright(aliveDomain.length)} ${chalk.bold("/")} ${chalk.bold.magentaBright(order.length)}` : chalk.bold.cyanBright(aliveDomain.length)} ${chalk.greenBright(aliveDomain.length > 1 ? __("domains alive") : __("domain alive"))}`, {
-            padding: 1,
-            borderColor: "yellow",
-            margin: 2,
-            align: "center",
-            borderStyle: "round"
-        }));
-    } else {
-        process.stdout.write(aliveDomain.join("\n"));
-    }
-};
+    resultFunction();
+})().then();

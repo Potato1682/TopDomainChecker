@@ -53,6 +53,8 @@ describe("Server alive validation in each protocol", () => {
     });
 
     test("Server alive validation fails in HTTP", async () => {
+        await expect(TLDCheck.check("potato1682.ml/that/is/unavailable/link", "http")).rejects.toThrow("HTTP Request Failed.");
+        await expect(new TLDCheck("http").check("potato1682.ml/that/is/unavailable/link")).rejects.toThrow("HTTP Request Failed.");
         await expect(TLDCheck.check("v38j57g9827fv98v79287htxc782ig87w6hdvb3k50979v8672y8h6t76f24tg3k039vb830h987j68732d6h18x5.com", "http")).rejects.toThrow();
         await expect(new TLDCheck("http").check("v38j57g9827fv98v79287htxc782ig87w6hdvb3k50979v8672y8h6t76f24tg3k039vb830h987j68732d6h18x5.com")).rejects.toThrow();
     });
@@ -66,6 +68,8 @@ describe("Server alive validation in each protocol", () => {
     });
 
     test("Server alive validation fails in HTTPS", async () => {
+        await expect(TLDCheck.check("potato1682.ml/that/is/unavailable/link", "https")).rejects.toThrow("HTTPS Request Failed.");
+        await expect(new TLDCheck("https").check("potato1682.ml/that/is/unavailable/link")).rejects.toThrow("HTTPS Request Failed.");
         await expect(TLDCheck.check("v38j57g9827fv98v79287htxc782ig87w6hdvb3k50979v8672y8h6t76f24tg3k039vb830h987j68732d6h18x5.com", "https")).rejects.toThrow();
         await expect(new TLDCheck("https").check("v38j57g9827fv98v79287htxc782ig87w6hdvb3k50979v8672y8h6t76f24tg3k039vb830h987j68732d6h18x5.com")).rejects.toThrow();
     });

@@ -2,6 +2,7 @@ dependencies:
   boxen: 5.0.0
   chalk: 4.1.0
   cli-cursor: 3.1.0
+  cli-truncate: 2.1.0
   command-line-args: 5.1.1
   command-line-usage: 6.1.1
   copy-paste: 1.3.0
@@ -17,6 +18,7 @@ dependencies:
   readline: 1.3.0
   sudo-block: 3.0.0
   terminal-link: 2.1.1
+  undici: 3.2.0
 devDependencies:
   '@types/command-line-args': 5.0.0
   '@types/command-line-usage': 5.0.1
@@ -1132,7 +1134,6 @@ packages:
     resolution:
       integrity: sha1-WWZ/QfrdTyDMvCu5a41Pf3jsA2c=
   /astral-regex/2.0.0:
-    dev: true
     engines:
       node: '>=8'
     resolution:
@@ -1591,7 +1592,6 @@ packages:
     dependencies:
       slice-ansi: 3.0.0
       string-width: 4.2.0
-    dev: true
     engines:
       node: '>=8'
     resolution:
@@ -6211,7 +6211,6 @@ packages:
       ansi-styles: 4.3.0
       astral-regex: 2.0.0
       is-fullwidth-code-point: 3.0.0
-    dev: true
     engines:
       node: '>=8'
     resolution:
@@ -6919,6 +6918,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-21rQzss/XPMjolTiIezSu3JAjgagXKROtNrYFEOWK109qY1Uv2tVjPTZ1ci2HgvQDA16gHYSthQIJfB+XId/rQ==
+  /undici/3.2.0:
+    dev: false
+    resolution:
+      integrity: sha512-lBvV7jZirNtDbDmnDJTLbfFDJO6VDav76XRqILfeERlSnAWeYn5pAo6JdPc7OM55RiBZdsh8ucRG9TNfDrDnhg==
   /unified-args/8.1.0:
     dependencies:
       camelcase: 5.3.1
@@ -7470,6 +7473,7 @@ specifiers:
   boxen: ^5.0.0
   chalk: ^4.1.0
   cli-cursor: ^3.1.0
+  cli-truncate: ^2.1.0
   command-line-args: ^5.1.1
   command-line-usage: ^6.1.1
   copy-paste: ^1.3.0
@@ -7514,3 +7518,4 @@ specifiers:
   ts-node: ^9.1.1
   typedoc: ^0.20.19
   typescript: ^4.1.3
+  undici: ^3.2.0

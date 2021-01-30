@@ -3,10 +3,8 @@ FROM node:15
 WORKDIR /opt/app
 
 COPY package*.json ./
-RUN npm i
+RUN npm i -g pnpm && pnpm i
 
 COPY . .
 
-RUN npm  build
-
-CMD [ "node", "dist/src/index.js" ]
+CMD [ "node", "--require=ts-node/register", "src/index.ts" ]

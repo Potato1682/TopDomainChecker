@@ -1,5 +1,5 @@
 import { promise } from "ping";
-import got from "got";
+import { request } from "undici";
 
 /**
  * The TopDomainChecker API.
@@ -48,7 +48,11 @@ export default class TLDCheck {
 
             case "http":
                 try {
-                    await got(`http://${domain}`);
+                    const { statusCode } = await request(`http://${domain}`, { bodyTimeout: 3000, method: "GET", path: "/" });
+
+                    if (statusCode !== 200) {
+                        return Promise.reject(new Error("HTTP Request Failed."));
+                    }
 
                     return true;
                 } catch (error) {
@@ -57,7 +61,11 @@ export default class TLDCheck {
 
             case "https":
                 try {
-                    await got(`https://${domain}`);
+                    const { statusCode } = await request(`https://${domain}`, { bodyTimeout: 3000, method: "GET", path: "/" });
+
+                    if (statusCode !== 200) {
+                        return Promise.reject(new Error("HTTPS Request Failed."));
+                    }
 
                     return true;
                 } catch (error) {
@@ -89,13 +97,9 @@ export default class TLDCheck {
         }
 
         const order: string[] = [];
-        const response = await got("https://data.iana.org/TLD/tlds-alpha-by-domain.txt");
 
         const topLevelDomains = [
-            ...(response.body
-                .toLowerCase()
-                .split(/\r\n|\n/)
-                .filter(tld => !tld.startsWith("#") || !tld)),
+            ...(await this.fetchTLDs()),
             ...additionalTLD
         ];
 
@@ -104,5 +108,20 @@ export default class TLDCheck {
         }
 
         return [ ...new Set(order) ];
+    }
+
+    static async fetchTLDs(): Promise<string[]> {
+        const { body } = await request("https://data.iana.org/TLD/tlds-alpha-by-domain.txt");
+
+        let result = "";
+
+        for await (const data of body) {
+            result += data.toString();
+        }
+
+        return result
+            .toLowerCase()
+            .split(/\r\n|\n/)
+            .filter(tld => !tld.startsWith("#") || tld.trim());
     }
 }
