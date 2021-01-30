@@ -44,7 +44,7 @@ export default class TLDCheck {
     static async check(domain: string, protocol: "ping" | "http" | "https" = "ping"): Promise<boolean> {
         switch (protocol) {
             case "ping":
-                return (await promise.probe(domain, { extra: process.platform === "linux" ? [ "-t 1" ] : undefined })).alive;
+                return (await promise.probe(domain, { extra: process.platform === "linux" ? [ "-c 1" ] : undefined })).alive;
 
             case "http":
                 try {

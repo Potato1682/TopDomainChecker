@@ -26,7 +26,7 @@
         "url": "git+https://github.com/P2P-Develop/TopDomainChecker.git"
     },
     "license": "MIT",
-    "author": "P2P-Develop (https://p2p-dev.team)",
+    "author": "Potato1682",
     "main": "src/api.ts",
     "types": "dist/src",
     "bin": {
@@ -63,7 +63,6 @@
             "sort-package-json"
         ]
     },
-    "jest": {},
     "dependencies": {
         "boxen": "^5.0.0",
         "chalk": "^4.1.0",
