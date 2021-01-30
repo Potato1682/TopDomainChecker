@@ -155,7 +155,7 @@ if (!arguments_["dry-run"] && arguments_.quiet && arguments_.verbose) {
 
 // Ping -> OK domains
 const aliveDomain: string[] = [];
-const addTld = [ "co.jp", "or,jp", "ne.jp", "ac.jp", "ad.jp", "ed.jp", "go.jp", "gr.jp", "lg.jp" ];
+const addTld = [ "co.jp", "or.jp", "ne.jp", "ac.jp", "ad.jp", "ed.jp", "go.jp", "gr.jp", "lg.jp" ];
 
 (async () => {
     // Check stdin (no input -> empty)
