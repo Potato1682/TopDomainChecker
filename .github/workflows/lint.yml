@@ -33,19 +33,6 @@ jobs:
               with:
                   version: 5.16.0
 
-            - name: Get pnpm cache directory
-              id: npm-cache
-              run: |
-                  echo "::set-output name=dir::$(pnpm config get cache)"
-
-            - name: Cache
-              uses: actions/cache@v2
-              with:
-                  path: ${{ steps.npm-cache.outputs.dir }}
-                  key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
-                  restore-keys: |
-                      ${{ runner.os }}-node-
-
             - name: Install dependencies
               run: pnpm i
 
