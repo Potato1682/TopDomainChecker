@@ -44,6 +44,7 @@ jobs:
 
             - name: Run jest
               run: pnpm run test
+              env:
                   CI: true
 
             - name: Upload coverage
