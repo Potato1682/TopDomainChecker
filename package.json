@@ -26,7 +26,7 @@
         "url": "git+https://github.com/P2P-Develop/TopDomainChecker.git"
     },
     "license": "MIT",
-    "author": "Potato1682",
+    "author": "Potato1682 <contact@potato1682.ml> (https://www.potato1682.ml)",
     "main": "src/api.ts",
     "types": "dist/src",
     "bin": {
@@ -43,7 +43,7 @@
         "lint": "npm-run-all -p lint:*",
         "lint:js": "eslint .",
         "lint:md": "remark -r ./.remarkrc.yml .",
-        "release": "npm build && np",
+        "release": "npm run build && np",
         "start": "node --require ts-node/register src/index.ts",
         "test": "jest",
         "posttest": "npm run lint",
@@ -102,6 +102,7 @@
         "husky": "^4.3.8",
         "jest": "^26.6.3",
         "lint-staged": "^10.5.3",
+        "np": "^7.2.0",
         "npm-run-all": "^4.1.5",
         "remark-cli": "^9.0.0",
         "remark-lint": "^8.0.0",
