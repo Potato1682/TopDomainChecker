@@ -62,10 +62,8 @@ jobs:
               uses: reviewdog/action-remark-lint@v1
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
-                  reporter: github-pr-check
-
-            - name: Run lint
-              run: pnpm run lint
+                  reporter: github-pr-review
+                  remark_args: "-r .remarkrc.js ."
 
             - name: Run jest
               run: pnpm run test
