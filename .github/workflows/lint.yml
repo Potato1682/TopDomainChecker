@@ -19,6 +19,9 @@ jobs:
         # The type of runner that the job will run on
         runs-on: ubuntu-latest
 
+        env:
+            ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
         # Steps represent a sequence of tasks that will be executed as part of the job
         steps:
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -32,6 +35,19 @@ jobs:
               uses: pnpm/action-setup@v1
               with:
                   version: 5.16.0
+
+            - name: Get pnpm cache directory
+              id: npm-cache
+              run: |
+                  echo "::set-output name=dir::$(pnpm config get cache)"
+
+            - name: Cache
+              uses: actions/cache@v2
+              with:
+                  path: ${{ steps.npm-cache.outputs.dir }}
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-node-
 
             - name: Install dependencies
               run: pnpm i
