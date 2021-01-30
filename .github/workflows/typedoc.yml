@@ -18,27 +18,34 @@ jobs:
             - name: List files (for Debug)
               run: ls -A
 
-            - name: Set up Node.js
-              uses: actions/setup-node@v1
+            - name: Set up Node.js environment
+              uses: actions/setup-node@v2
 
-            - name: Get npm cache directory
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v1
+              with:
+                  version: 5.16.0
+              env:
+                  ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
+            - name: Get pnpm cache directory
               id: npm-cache
               run: |
-                  echo "::set-output name=dir::$(npm config get cache)"
+                  echo "::set-output name=dir::$(pnpm config get cache)"
 
             - name: Cache
               uses: actions/cache@v2
               with:
                   path: ${{ steps.npm-cache.outputs.dir }}
-                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ runner.os }}-node-
 
             - name: Install dependencies
-              run: npm i
+              run: pnpm i
 
             - name: Generate Typedoc
-              run: npm run typedoc
+              run: pnpm run typedoc
 
             - name: Stash
               run: git stash -ua
@@ -66,4 +73,4 @@ jobs:
                   force: false
                   ref: typedoc
               env:
-                  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

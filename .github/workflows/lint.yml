@@ -56,7 +56,6 @@ jobs:
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   reporter: github-pr-review
-                  eslint_flags: "."
 
             - name: Remark Lint review
               uses: reviewdog/action-remark-lint@v1
