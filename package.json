@@ -36,7 +36,7 @@
         "dist/src"
     ],
     "scripts": {
-        "build": "npm run clean && tsc -p . && cp -r src/locales dist/src",
+        "build": "tsc -p . && cp -r src/locales dist/src",
         "clean": "rimraf dist",
         "fix": "eslint --fix .",
         "preinstall": "npx only-allow pnpm",
@@ -83,6 +83,7 @@
         "readline": "^1.3.0",
         "sudo-block": "^3.0.0",
         "terminal-link": "^2.1.1",
+        "tslib": "^2.1.0",
         "undici": "^3.2.0"
     },
     "devDependencies": {

@@ -48,7 +48,7 @@ export default class TLDCheck {
 
             case "http":
                 try {
-                    const { statusCode } = await request(`http://${domain}`, { bodyTimeout: 3000, method: "GET", path: "/" });
+                    const { statusCode } = await request(`http://${domain}`);
 
                     if (statusCode !== 200) {
                         return Promise.reject(new Error("HTTP Request Failed."));
@@ -61,7 +61,7 @@ export default class TLDCheck {
 
             case "https":
                 try {
-                    const { statusCode } = await request(`https://${domain}`, { bodyTimeout: 3000, method: "GET", path: "/" });
+                    const { statusCode } = await request(`https://${domain}`);
 
                     if (statusCode !== 200) {
                         return Promise.reject(new Error("HTTPS Request Failed."));
