@@ -14,5 +14,11 @@ module.exports = {
     },
     testMatch: [
         "**/test/**/*.test.ts"
-    ]
+    ],
+    reporters: [
+        "default",
+        "jest-github-actions-reporter"
+    ],
+    testLocationInResults: true,
+    coverage: true
 };

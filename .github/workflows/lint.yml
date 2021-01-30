@@ -65,13 +65,9 @@ jobs:
                   reporter: github-pr-check
 
             - name: Run lint
-              run: npm run lint
+              run: pnpm run lint
 
             - name: Run jest
-              run: npx jest --coverage
-
-            - name: Show coverage in comments
-              uses: ziishaned/jest-reporter-action@v0.0.1
-              with:
-                  github-token: ${{ secrets.GITHUB_TOKEN }}
-                  test-command: "yarn jest --coverage"
+              run: pnpm run test
+              env:
+                  CI: true
