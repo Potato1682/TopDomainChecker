@@ -1,4 +1,5 @@
 import { promise } from "ping";
+import got from "got";
 import { request } from "undici";
 
 /**
@@ -48,11 +49,7 @@ export default class TLDCheck {
 
             case "http":
                 try {
-                    const { statusCode } = await request(`http://${domain}`);
-
-                    if (statusCode !== 200) {
-                        return Promise.reject(new Error("HTTP Request Failed."));
-                    }
+                    await got(`http://${domain}`);
 
                     return true;
                 } catch (error) {
@@ -61,11 +58,7 @@ export default class TLDCheck {
 
             case "https":
                 try {
-                    const { statusCode } = await request(`https://${domain}`);
-
-                    if (statusCode !== 200) {
-                        return Promise.reject(new Error("HTTPS Request Failed."));
-                    }
+                    await got(`https://${domain}`);
 
                     return true;
                 } catch (error) {

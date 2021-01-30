@@ -1396,12 +1396,12 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-AKcdTnFSWATd5/GCPRxr2ChwIJ85CeyrEyjRHlKxQ56d4XJMGym0uAiKn0xbLOGOl3+yRpOTi484dVCEc5AUzQ==
-  /cacheable-lookup/5.0.3:
+  /cacheable-lookup/5.0.4:
     dev: false
     engines:
-      node: '>=10'
+      node: '>=10.6.0'
     resolution:
-      integrity: sha512-W+JBqF9SWe18A72XFzN/V/CULFzPm7sBXzzR6ekkE+3tLG72wFZrBiBZhrZuDoYexop4PHJVdFAKb/Nj9+tm9w==
+      integrity: sha512-2/kNscPhpcxrOigMZzbiWF7dz8ilhb/nIHU3EyZiXWXpeq/au8qJ8VhdftMkty3n7Gj6HIGalQG8oiBNB3AJgA==
   /cacheable-request/6.1.0:
     dependencies:
       clone-response: 1.0.2
@@ -2916,7 +2916,7 @@ packages:
       '@szmarczak/http-timer': 4.0.5
       '@types/cacheable-request': 6.0.1
       '@types/responselike': 1.0.0
-      cacheable-lookup: 5.0.3
+      cacheable-lookup: 5.0.4
       cacheable-request: 7.0.1
       decompress-response: 6.0.0
       http2-wrapper: 1.0.0-beta.5.2
