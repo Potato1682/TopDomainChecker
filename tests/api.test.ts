@@ -36,19 +36,37 @@ describe("Server alive validation in each protocol", () => {
         expect(expectInstanced);
     });
 
+    test("Server alive validation fails in ICMP echo request", async () => {
+        const expected = await TLDCheck.check("v38j57g9827fv98v79287htxc782ig87w6hdvb3k50979v8672y8h6t76f24tg3k039vb830h987j68732d6h18x5.com");
+        const expectedInstanced = await new TLDCheck().check("v38j57g9827fv98v79287htxc782ig87w6hdvb3k50979v8672y8h6t76f24tg3k039vb830h987j68732d6h18x5.com");
+
+        expect(expected).toBeFalsy();
+        await expect(expectedInstanced).toBeFalsy();
+    });
+
     test("Server alive validation in HTTP", async () => {
         const expected = await TLDCheck.check("p2p-dev.team", "http");
-        const expectInstanced = await new TLDCheck("http").check("p2p-dev.team");
+        const expectInstanced = await new TLDCheck("http").check("bing.com");
 
         expect(expected);
         expect(expectInstanced);
     });
 
+    test("Server alive validation fails in HTTP", async () => {
+        await expect(TLDCheck.check("v38j57g9827fv98v79287htxc782ig87w6hdvb3k50979v8672y8h6t76f24tg3k039vb830h987j68732d6h18x5.com", "http")).rejects.toThrow();
+        await expect(new TLDCheck("http").check("v38j57g9827fv98v79287htxc782ig87w6hdvb3k50979v8672y8h6t76f24tg3k039vb830h987j68732d6h18x5.com")).rejects.toThrow();
+    });
+
     test("Server alive validation in HTTPS", async () => {
         const expected = await TLDCheck.check("p2p-dev.team", "https");
-        const expectInstanced = await new TLDCheck("https").check("p2p-dev.team");
+        const expectInstanced = await new TLDCheck("https").check("bing.com");
 
         expect(expected);
         expect(expectInstanced);
+    });
+
+    test("Server alive validation fails in HTTPS", async () => {
+        await expect(TLDCheck.check("v38j57g9827fv98v79287htxc782ig87w6hdvb3k50979v8672y8h6t76f24tg3k039vb830h987j68732d6h18x5.com", "https")).rejects.toThrow();
+        await expect(new TLDCheck("https").check("v38j57g9827fv98v79287htxc782ig87w6hdvb3k50979v8672y8h6t76f24tg3k039vb830h987j68732d6h18x5.com")).rejects.toThrow();
     });
 });

@@ -19,5 +19,8 @@ module.exports = {
         "default",
         "jest-github-actions-reporter"
     ],
-    testLocationInResults: true
+    testLocationInResults: true,
+    setupFilesAfterEnv: [
+        process.cwd() + "/jest.setup.js"
+    ]
 };
